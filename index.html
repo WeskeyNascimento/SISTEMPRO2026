@@ -418,7 +418,6 @@
             let carregou = false;
             const timeoutSeguranca = setTimeout(() => {
                 if (!carregou) {
-                    console.warn("⚠️ Firebase demorou para responder. Carregando dados locais de segurança...");
                     carregou = true;
                     ministerios = listaMinisteriosPadrao;
                     padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
@@ -453,7 +452,6 @@
                     initSistema();
                 }
             } catch (error) {
-                console.error("Erro ao carregar do Firebase:", error);
                 if (!carregou) {
                     carregou = true;
                     clearTimeout(timeoutSeguranca);
@@ -475,7 +473,7 @@
                     escalas
                 });
             } catch (error) {
-                console.error("Erro ao sincronizar com o Firebase:", error);
+                console.error("Erro ao salvar:", error);
             }
         }
 
@@ -804,7 +802,6 @@
 
         async function salvarMinisterioContexto(e, formElement) {
             e.preventDefault();
-            
             const escopo = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
             
             const indexEditInput = escopo.querySelector('.min-edit-index');
@@ -961,7 +958,7 @@
             const tbody = document.getElementById('table-eventos');
             if(!tbody) return;
             tbody.innerHTML = eventos.map((ev, i) => `
-                <tr><td><strong>${ev.nome}</strong></td><td>${ev.dataInicio}</td><td><button class="btn btn-danger" onclick="excluirEvento(${i})">X</button></td></tr>
+                <tr><td><strong>${ev.nome}</strong></td><td>${ev.dataInicio}</td><td><button type="button" class="btn btn-danger" onclick="excluirEvento(${i})">X</button></td></tr>
             `).join('');
         }
 
@@ -997,7 +994,7 @@
                 return;
             }
             tbody.innerHTML = padroesFixosMinisterios.map((p, i) => `
-                <tr><td><span class="tag tag-purple">${p.ocorrencia}</span></td><td>${p.ministerio}</td><td><button class="btn btn-danger" onclick="excluirPadraoMinisterio(${i})">X</button></td></tr>
+                <tr><td><span class="tag tag-purple">${p.ocorrencia}</span></td><td>${p.ministerio}</td><td><button type="button" class="btn btn-danger" onclick="excluirPadraoMinisterio(${i})">X</button></td></tr>
             `).join('');
         }
 
