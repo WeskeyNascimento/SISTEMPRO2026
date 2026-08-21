@@ -3,93 +3,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Church PRO - Gestão de Ministérios e Escalas</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDK v10.8.0 (Compat) -->
+    <title>Painel Completo - Church PRO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0b1329; color: #f8fafc; padding: 25px; min-height: 100vh; }
+
+        #auth-screen { display: flex; justify-content: center; align-items: center; min-height: 85vh; }
+        .auth-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; }
+        .auth-logo { font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .auth-logo span { color: #38bdf8; }
+        .auth-subtitle { color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px; }
+        .auth-divider { margin: 20px 0; border: none; border-top: 1px solid rgba(255,255,255,0.08); position: relative; }
+        .auth-divider span { background: #151f33; padding: 0 10px; color: #64748b; font-size: 0.75rem; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); text-transform: uppercase; }
+
+        #app-screen { display: none; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .nav-brand { font-size: 1.3rem; font-weight: 800; letter-spacing: 0.5px; }
+        .nav-brand span { color: #38bdf8; }
+        .user-badge { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; background: rgba(15, 23, 42, 0.5); padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+        .module-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+        .module-card:hover { transform: translateY(-4px); border-color: rgba(56, 189, 248, 0.4); box-shadow: 0 12px 25px -5px rgba(56, 189, 248, 0.15); }
+
+        .module-header { padding: 22px 25px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; background: transparent; transition: background 0.3s; }
+        .module-header:hover { background: rgba(255, 255, 255, 0.03); }
+        .module-title { font-size: 1.15rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 12px; }
+        
+        .chevron { width: 24px; height: 24px; fill: #38bdf8; transition: transform 0.4s ease; }
+        .module-card.active .chevron { transform: rotate(180deg); }
+        .module-card.active { border-color: #38bdf8; }
+
+        .module-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s ease-out, opacity 0.3s ease, padding 0.4s ease; padding: 0 25px; }
+        .module-card.active .module-content { max-height: 2000px; opacity: 1; padding: 10px 25px 25px 25px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .sub-card { background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-top: 15px; }
+        .sub-title { font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.7rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
+        .form-control { width: 100%; padding: 10px; background-color: #0f172a; border: 1px solid #334155; border-radius: 8px; color: white; font-size: 0.85rem; outline: none; transition: border 0.2s; }
+        .form-control:focus { border-color: #38bdf8; }
+        .form-control:disabled { background-color: #1a2234; color: #64748b; border-color: #1e293b; cursor: not-allowed; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { color: #64748b; text-transform: uppercase; font-size: 0.7rem; }
+
+        .btn { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-weight: 700; font-size: 0.75rem; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-primary { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; }
+        .btn-success { background: linear-gradient(135deg, #10b981, #047857); color: white; }
+        .btn-warning { background-color: #f59e0b; color: white; }
+        .btn-danger { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .btn:hover { opacity: 0.9; transform: scale(0.98); }
+
+        .action-btn-edit { background-color: #f59e0b; color: white; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: 0.2s; margin-right: 4px; }
+        .action-btn-edit:hover { background-color: #d97706; }
+        .action-btn-delete { background-color: rgba(239, 68, 68, 0.25); color: #fca5a5; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; transition: 0.2s; }
+        .action-btn-delete:hover { background-color: rgba(239, 68, 68, 0.4); color: white; }
+
+        .tag { padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; display: inline-block; margin: 2px; }
+        .tag-purple { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; }
+
+        .ministerio-fixo-card { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 10px; padding: 10px 14px; margin-top: -4px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: #e2e8f0; }
+        .ministerio-fixo-card span { color: #c084fc; font-weight: 700; }
+        .btn-puxar { background: #0284c7; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-puxar:hover { background: #0369a1; }
+
+        .resumo-lista { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .resumo-item { display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.7); padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; position: relative; overflow: hidden; }
+        .resumo-item::before { content: ''; position: absolute; left: 0; top: 12px; bottom: 12px; width: 4px; background: linear-gradient(to bottom, #a855f7, #38bdf8); border-radius: 0 4px 4px 0; }
+        .resumo-item .resumo-label { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #f8fafc; }
+        .resumo-item .resumo-value { color: #94a3b8; font-weight: 500; font-size: 0.85rem; text-transform: uppercase; }
+        .resumo-item .resumo-badge { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
+
+        .escala-mes-header-info { text-align: center; margin-bottom: 20px; }
+        .escala-mes-header-info h2 { font-size: 1.3rem; color: #38bdf8; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .escala-mes-header-info p { font-size: 0.85rem; color: #94a3b8; }
+        
+        .tabela-mes-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-top: 15px; }
+        .tabela-mes-grid { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .tabela-mes-grid th { text-align: left; padding: 12px; color: #64748b; font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .tabela-mes-grid td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+        .data-tag-pill { background: rgba(2, 132, 199, 0.2); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: inline-block; text-align: center; }
+
+        .modal-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .modal-tab-btn { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #94a3b8; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .modal-tab-btn.active { background: #0284c7; border-color: #38bdf8; color: white; }
+
+        .fullscreen-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(11, 19, 41, 0.95); backdrop-filter: blur(12px); z-index: 9999; overflow-y: auto; padding: 40px 20px; }
+        .modal-container { max-width: 950px; margin: 0 auto; background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative; }
+        .modal-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .modal-title { font-size: 1.3rem; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        .close-btn { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: none; font-size: 1.2rem; cursor: pointer; padding: 6px 12px; border-radius: 8px; }
+
+        #loading-cloud { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0b1329; display: flex; justify-content: center; align-items: center; z-index: 99999; font-size: 1.2rem; color: #38bdf8; flex-direction: column; gap: 15px; }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body>
 
-    <!-- Header / Navbar -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 shadow-md">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-wider text-amber-400 flex items-center gap-2">
-                ⛪ Church PRO
-            </h1>
-            <span id="connection-status" class="text-xs bg-emerald-900/60 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-700">
-                🟢 Conectando...
-            </span>
+    <div id="loading-cloud">
+        <div>☁️ Conectando ao Banco de Dados do Firebase...[cite: 1]</div>
+        <div style="font-size: 0.8rem; color: #94a3b8;">Aguarde um instante.[cite: 1]</div>
+    </div>
+
+    <!-- TELA DE LOGIN -->
+    <div id="auth-screen">
+        <div class="auth-card">
+            <div class="auth-logo">CHURCH <span>PRO</span></div>
+            <div class="auth-subtitle">Gestão de Escalas e Ministérios[cite: 1]</div>
+            
+            <button class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 0.95rem; margin-bottom: 15px;" onclick="entrarComoVisitante()">
+                👀 Acessar como Visitante[cite: 1]
+            </button>
+            
+            <div class="auth-divider"><span>Ou</span></div>
+
+            <div class="form-group" style="text-align: left; margin-top: 15px;">
+                <label>Selecionar Perfil / Liderança[cite: 1]</label>
+                <select id="login-role-select" class="form-control" onchange="atualizarCampoSenhaLogin()">
+                    <option value="ADMIN">Administrador Geral[cite: 1]</option>
+                </select>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label>Senha de Acesso[cite: 1]</label>
+                <input type="password" id="login-password" class="form-control" placeholder="Digite sua senha...">[cite: 1]
+            </div>
+
+            <button class="btn btn-success" style="width: 100%; padding: 12px; font-size: 0.9rem; margin-top: 5px;" onclick="fazerLoginSeguro()">
+                🔐 Entrar no Sistema[cite: 1]
+            </button>
         </div>
-    </header>
+    </div>
 
-    <!-- Conteúdo Principal -->
-    <main class="max-w-4xl mx-auto p-4 flex-1 w-full space-y-6">
-
-        <!-- Formulário de Cadastro / Edição de Ministérios -->
-        <div class="bg-slate-900 p-5 rounded-xl shadow-lg border border-slate-800">
-            <h3 id="form-title" class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
-                ✏️ <span id="form-action-label">CADASTRAR NOVO MINISTÉRIO</span>
-            </h3>
-            <form id="ministry-form" onsubmit="salvarMinisterio(event)">
-                <input type="hidden" id="ministry-id">
-                
-                <div class="mb-3">
-                    <label class="block text-sm font-medium text-slate-300 mb-1">NOME DO MINISTÉRIO</label>
-                    <input type="text" id="ministry-name" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-400" placeholder="Ex: Louvor, Jovens, Diaconia...">
-                </div>
-
-                <div class="mb-3">
-                    <label class="block text-sm font-medium text-slate-300 mb-1">LÍDER DO MINISTÉRIO</label>
-                    <input type="text" id="ministry-leader" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-400" placeholder="Nome do líder responsável">
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-300 mb-1">MEMBROS DA EQUIPE</label>
-                    <input type="text" id="ministry-members" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-400" placeholder="Ex: Ana, Carlos, Beatriz...">
-                </div>
-
-                <div class="flex gap-3">
-                    <button type="submit" id="btn-salvar-atualizar" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-2.5 rounded-lg transition-all shadow-md">
-                        Salvar Ministério
-                    </button>
-                    <button type="button" onclick="limparFormularioMinisterio()" class="bg-rose-950 hover:bg-rose-900 text-slate-300 font-semibold px-4 py-2.5 rounded-lg transition-all border border-rose-800/50">
-                        Cancelar
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Tabela de Ministérios Ativos -->
-        <div class="bg-slate-900 p-5 rounded-xl shadow-lg border border-slate-800">
-            <h3 class="text-lg font-bold text-slate-200 mb-4">MINISTÉRIOS ATIVOS</h3>
-            <div class="overflow-x-auto max-h-96 overflow-y-auto rounded-lg border border-slate-800">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-slate-950 text-slate-400 text-xs uppercase tracking-wider sticky top-0">
-                        <tr>
-                            <th class="p-3">Nome</th>
-                            <th class="p-3">Líder</th>
-                            <th class="p-3 text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ministries-table-body" class="divide-y divide-slate-800 text-slate-100 text-sm">
-                        <!-- Dados carregados via JavaScript -->
-                    </tbody>
-                </table>
+    <!-- APLICAÇÃO PRINCIPAL -->
+    <div id="app-screen">
+        <div class="navbar">
+            <div class="nav-brand">PAINEL DE CONTROLE <span>PRO</span></div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="user-badge" id="current-user-display">👤 Perfil: Administrador[cite: 1]</div>
+                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.75rem;" onclick="sairDoSistema()">🚪 Sair / Trocar Perfil[cite: 1]</button>
             </div>
         </div>
 
-    </main>
+        <div class="dashboard-grid">
+            <!-- CARD 1: RESUMO / ESCALA DO MÊS -->
+            <div class="module-card active" id="card-resumo">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">☀️ Escala de Hoje (Resumo)[cite: 1]</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('resumo', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="resumo-lista" id="resumo-hoje"></div>
+                </div>
+            </div>
 
-    <!-- Rodapé -->
-    <footer class="bg-slate-900 border-t border-slate-800 text-center p-4 text-xs text-slate-500">
-        Church PRO &copy; 2026 - Todos os direitos reservados.
-    </footer>
+            <!-- CARD 2: ORGANIZAÇÃO DO CULTO -->
+            <div class="module-card" id="card-culto">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">📖 Organização do Culto do Dia[cite: 1]</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('culto', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="sub-card">
+                        <div class="sub-title">Ordem do Culto & Informações[cite: 1]</div>
+                        <div id="organizacao-culto-preview" style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5;">
+                            <em>Exibição dinâmica das programações do dia...</em>[cite: 1]
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Scripts de Conexão e Regras do Sistema -->
+            <!-- CARD 3: MONTAR ESCALA -->
+            <div class="module-card active" id="card-escala">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">📝 Montar Escala do Dia[cite: 1]</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('escala', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="sub-card">
+                        <div class="sub-title">Preencher e Gerenciar Escala[cite: 1]</div>
+                        <form id="form-escala" onsubmit="salvarEscala(event)">
+                            <div class="form-group">
+                                <label>Data da Escala[cite: 1]</label>
+                                <input type="date" id="escala-data" class="form-control" required onchange="verificarDadosData()">[cite: 1]
+                            </div>
+                            
+                            <div id="bloco-ministerio-fixo" class="ministerio-fixo-card">
+                                <div>🏛️ Ministério Sugerido (Padrão): <span id="span-min-fixo-nome">Nenhum definido</span></div>[cite: 1]
+                                <button type="button" class="btn-puxar" onclick="puxarMinisterioFixoParaEscala()">Puxar para Escala</button>[cite: 1]
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ministério / Pregador do Dia[cite: 1]</label>
+                                <select id="esc-ministerio-select" class="form-control field-perm" onchange="selecionarMinisterioManual(this.value)">
+                                    <option value="">-- Selecionar Ministério Cadastrado --</option>[cite: 1]
+                                </select>
+                            </div>
+                            
+                            <div class="form-group"><label>Pregador / Orador[cite: 1]</label><input type="text" id="esc-pregador" class="form-control field-perm" placeholder="Ex: Min. Adolescentes ou Nome do Pregador"></div>[cite: 1]
+                            <div class="form-group"><label>Música Especial[cite: 1]</label><input type="text" id="esc-especial" class="form-control field-perm" placeholder="Ex: I9Teens"></div>[cite: 1]
+                            <div class="form-group"><label>Louvor Congregacional[cite: 1]</label><input type="text" id="esc-louvor" class="form-control field-perm" placeholder="Ex: I9Teens"></div>[cite: 1]
+                            <div class="form-group"><label>Diáconos Responsáveis[cite: 1]</label><input type="text" id="esc-diaconos" class="form-control field-perm" placeholder="Ex: Marlene B."></div>[cite: 1]
+                            <div class="form-group"><label>Sonoplastia / Mídia[cite: 1]</label><input type="text" id="esc-sonoplastia" class="form-control field-perm" placeholder="Ex: W. Nascimento"></div>[cite: 1]
+                            <div class="form-group"><label>Recepção[cite: 1]</label><input type="text" id="esc-recepcao" class="form-control field-perm" placeholder="Ex: Miranda"></div>[cite: 1]
+                            
+                            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                                <button type="submit" class="btn btn-success" style="flex: 2;">Salvar e Atualizar Escala[cite: 1]</button>
+                                <button type="button" class="btn btn-danger" style="flex: 1;" onclick="excluirEscalaAtual()">Excluir Escala[cite: 1]</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 4: DIAS DE MINISTÉRIOS -->
+            <div class="module-card admin-only active" id="card-diasMinisterios">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">⛪ Dias de Ministérios (Tabela Fixa)[cite: 1]</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('diasMinisterios', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="sub-card">
+                        <div class="sub-title">➕ Configurar Padrão Fixo do Mês[cite: 1]</div>
+                        <form id="form-ministerio-dia" onsubmit="salvarPadraoMinisterio(event)">
+                            <div class="form-group">
+                                <label>Ocorrência[cite: 1]</label>
+                                <select id="mindia-ocorrencia" class="form-control" required>
+                                    <option value="1º Sábado">1º Sábado</option>[cite: 1]
+                                    <option value="2º Sábado">2º Sábado</option>[cite: 1]
+                                    <option value="3º Sábado">3º Sábado</option>[cite: 1]
+                                    <option value="4º Sábado">4º Sábado</option>[cite: 1]
+                                    <option value="5º Sábado">5º Sábado</option>[cite: 1]
+                                    <option value="1º Domingo">1º Domingo</option>[cite: 1]
+                                    <option value="2º Domingo">2º Domingo</option>[cite: 1]
+                                    <option value="3º Domingo">3º Domingo</option>[cite: 1]
+                                    <option value="4º Domingo">4º Domingo</option>[cite: 1]
+                                    <option value="5º Domingo">5º Domingo</option>[cite: 1]
+                                    <option value="1ª Quarta-feira">1ª Quarta-feira</option>[cite: 1]
+                                    <option value="2ª Quarta-feira">2ª Quarta-feira</option>[cite: 1]
+                                    <option value="3ª Quarta-feira">3ª Quarta-feira</option>[cite: 1]
+                                    <option value="4ª Quarta-feira">4ª Quarta-feira</option>[cite: 1]
+                                    <option value="5ª Quarta-feira">5ª Quarta-feira</option>[cite: 1]
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Ministério Responsável[cite: 1]</label>
+                                <select id="mindia-ministerio" class="form-control" required></select>[cite: 1]
+                            </div>
+                            <button type="submit" class="btn btn-success" style="width:100%;">Salvar na Tabela Fixa[cite: 1]</button>
+                        </form>
+                    </div>
+                    <div class="sub-card" style="max-height:220px; overflow-y:auto;">
+                        <div class="sub-title">Tabela Fixa Ativa[cite: 1]</div>
+                        <table>
+                            <thead><tr><th>Ocorrência</th><th>Ministério</th><th>Ação</th></tr></thead>[cite: 1]
+                            <tbody id="table-dias-ministerios"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 5: MINISTÉRIOS & EQUIPE (ESTRUTURA ORIGINAL ADEQUADA) -->
+            <div class="module-card admin-only active" id="card-ministerios">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">📋 Ministérios & Cadastro[cite: 1]</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('ministerios', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="sub-card area-form-ministerio">
+                        <div class="sub-title form-ministerio-titulo">+ CADASTRAR MINISTÉRIO[cite: 1]</div>
+                        <form onsubmit="salvarMinisterioContexto(event, this)">
+                            <input type="hidden" class="min-edit-index" value="-1">[cite: 1]
+                            <div class="form-group"><label>Nome do Ministério[cite: 1]</label><input type="text" class="min-nome form-control" required placeholder="Ex: Diaconato"></div>[cite: 1]
+                            <div class="form-group"><label>Líder do Ministério[cite: 1]</label><input type="text" class="min-lider form-control" required placeholder="Nome do Líder"></div>[cite: 1]
+                            <div class="form-group"><label>Membros da Equipe[cite: 1]</label><input type="text" class="min-equipe form-control" placeholder="Separados por vírgula"></div>[cite: 1]
+                            <div style="display: flex; gap: 8px;">
+                                <button type="submit" class="btn btn-success btn-salvar-ministerio" style="flex: 2; width: 100%;">Salvar Ministério[cite: 1]</button>
+                                <button type="button" class="btn btn-danger btn-cancelar-edicao" style="flex: 1; display: none;" onclick="cancelarEdicaoContexto(this)">Cancelar[cite: 1]</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="sub-card" style="max-height:280px; overflow-y:auto;">
+                        <div class="sub-title">Ministérios Ativos[cite: 1]</div>
+                        <table>
+                            <thead><tr><th>Nome</th><th>Líder</th><th>Ações</th></tr></thead>[cite: 1]
+                            <tbody class="table-ministerios-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 6: EVENTOS -->
+            <div class="module-card admin-only" id="card-eventos">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">📅 Eventos & Cultos Especiais[cite: 1]</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('eventos', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="sub-card">
+                        <div class="sub-title">➕ Agendar Evento[cite: 1]</div>
+                        <form id="form-evento" onsubmit="salvarEvento(event)">
+                            <div class="form-group"><label>Nome do Evento[cite: 1]</label><input type="text" id="ev-nome" class="form-control" required placeholder="Ex: Dia dos Adolescentes"></div>[cite: 1]
+                            <div style="display:flex; gap:8px;">
+                                <div class="form-group" style="flex:1;"><label>Início[cite: 1]</label><input type="date" id="ev-data-inicio" class="form-control" required></div>[cite: 1]
+                                <div class="form-group" style="flex:1;"><label>Término[cite: 1]</label><input type="date" id="ev-data-fim" class="form-control" required></div>[cite: 1]
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Agendar Evento[cite: 1]</button>
+                        </form>
+                    </div>
+                    <div class="sub-card" style="max-height:200px; overflow-y:auto;">
+                        <div class="sub-title">Programação Marcada[cite: 1]</div>
+                        <table>
+                            <thead><tr><th>Evento</th><th>Data</th><th>Ação</th></tr></thead>[cite: 1]
+                            <tbody id="table-eventos"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FULLSCREEN -->
+    <div id="fullscreen-modal" class="fullscreen-modal" onclick="fecharModalFora(event)">
+        <div class="modal-container" id="modal-printable-container">
+            <div class="modal-toolbar no-print">
+                <div class="modal-title" id="modal-titulo-view">Painel Completo[cite: 1]</div>
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir / PDF[cite: 1]</button>
+                    <button class="btn btn-warning" onclick="salvarModalComoJPG()">📷 Salvar JPG[cite: 1]</button>
+                    <button class="close-btn" onclick="fecharFullscreenModal()">✖</button>
+                </div>
+            </div>
+            
+            <div id="modal-abas-resumo" class="modal-tabs" style="display:none;">
+                <button class="modal-tab-btn active" id="btn-aba-dia" onclick="mudarAbaResumo('dia')">📅 Escala do Dia[cite: 1]</button>
+                <button class="modal-tab-btn" id="btn-aba-mes" onclick="mudarAbaResumo('mes')">📆 Escala do Mês[cite: 1]</button>
+            </div>
+
+            <div id="modal-content-body"></div>
+        </div>
+    </div>
+
     <script>
-        // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA2xFLaPvGGnYLXxytWwFt3icD2vSIC5I",
             authDomain: "estrela-dalva-27844.firebaseapp.com",
@@ -99,156 +379,610 @@
             appId: "1:820691097921:web:7904035dfc6dcf024229c0"
         };
 
-        // Inicialização do Firebase e Firestore
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        const appNovo = firebase.initializeApp(firebaseConfig, "appNovo");
+        const dbNovo = firebase.firestore(appNovo);
+
+        let senhaAdmin = 'admin123';
+        let anciaos = [{ nome: 'Marcilio' }];
+        let ministerios = [];
+        let eventos = [];
+        let padroesFixosMinisterios = [];
+        let escalas = {};
+        
+        let usuarioLogadoPerfil = 'VISITANTE';
+        let moduloAtualAberto = '';
+        let abaResumoAtual = 'dia';
+
+        const listaMinisteriosPadrao = [
+            { nome: 'Jovens (JA)', lider: 'Manoel', equipe: 'Equipe JA' },[cite: 1]
+            { nome: 'Música', lider: 'Ana', equipe: 'Coral e Músicos' },[cite: 1]
+            { nome: 'Ministério Pessoal', lider: 'Wesley', equipe: 'Equipe MP' },[cite: 1]
+            { nome: 'ASA', lider: 'Ester', equipe: 'Assistência Social' },[cite: 1]
+            { nome: 'Desbravadores', lider: 'Jean', equipe: 'Diretoria DBV' },[cite: 1]
+            { nome: 'Aventureiros', lider: 'Natalia', equipe: 'Diretoria AVT' },[cite: 1]
+            { nome: 'Familia', lider: 'Marcilio e Aline', equipe: 'Liderança' },[cite: 1]
+            { nome: 'Homens', lider: 'Jansen', equipe: 'Ministério Masculino' },[cite: 1]
+            { nome: 'Escola Sabatina', lider: 'Aline', equipe: 'Professores' },[cite: 1]
+            { nome: 'Saude e temperança', lider: 'Mariane', equipe: 'Apoio' },[cite: 1]
+            { nome: 'Mulher', lider: 'Meire', equipe: 'Ministério da Mulher' },[cite: 1]
+            { nome: 'Comunicação', lider: 'Ana Sofia', equipe: 'Mídia e Redes' },[cite: 1]
+            { nome: 'Sonoplastia', lider: 'Ernande', equipe: 'Áudio' },[cite: 1]
+            { nome: 'Diaconato', lider: 'Wesley Lessa e Rose', equipe: 'Diáconos e Diaconisas' },[cite: 1]
+            { nome: 'Infantil', lider: 'Juliana', equipe: 'Professores Infantis' },[cite: 1]
+            { nome: 'Adolescentes (19Teen)', lider: 'Raphaela', equipe: 'Equipe I9Teens' },[cite: 1]
+            { nome: 'Patrimonio', lider: 'Indefinido', equipe: 'Zeladoria' },[cite: 1]
+            { nome: 'Mordomia', lider: 'Divina Ferreira', equipe: 'Mordomia Cristã' }[cite: 1]
+        ];
+
+        async function carregarDadosDoBanco() {
+            try {
+                const docRef = dbNovo.collection("dados_igreja").doc("principal");
+                const docSnap = await docRef.get();
+
+                if (docSnap.exists) {
+                    const dados = docSnap.data();
+                    senhaAdmin = dados.senhaAdmin || 'admin123';
+                    anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
+                    ministerios = (dados.ministerios && dados.ministerios.length > 0) ? dados.ministerios : listaMinisteriosPadrao;
+                    eventos = dados.eventos || [];
+                    padroesFixosMinisterios = dados.padroesFixosMinisterios || [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                    escalas = dados.escalas || {};
+                } else {
+                    ministerios = listaMinisteriosPadrao;
+                    padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                    escalas = {};
+                }
+                await salvarTudoNoBanco();
+            } catch (error) {
+                console.error("Erro ao carregar do Firebase:", error);
+                ministerios = listaMinisteriosPadrao;
+            } finally {
+                document.getElementById('loading-cloud').style.display = 'none';
+                initSistema();
+            }
         }
-        const db = firebase.firestore();
 
-        // Monitorar status da conexão visualmente
-        const statusBadge = document.getElementById('connection-status');
-        db.collection("ministerios").limit(1).get().then(() => {
-            statusBadge.innerText = "🟢 Conectado ao Cloud";
-            statusBadge.className = "text-xs bg-emerald-900/60 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-700";
-        }).catch((err) => {
-            statusBadge.innerText = "🔴 Erro Conexão";
-            statusBadge.className = "text-xs bg-rose-900/60 text-rose-400 px-2.5 py-1 rounded-full border border-rose-700";
-        });
+        async function salvarTudoNoBanco() {
+            try {
+                await dbNovo.collection("dados_igreja").doc("principal").set({
+                    senhaAdmin,
+                    anciaos,
+                    ministerios,
+                    eventos,
+                    padroesFixosMinisterios,
+                    escalas
+                });
+            } catch (error) {
+                console.error("Erro ao sincronizar com o Firebase:", error);
+            }
+        }
 
-        const colecaoMinisterios = "ministerios";
+        function initSistema() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const inp = document.getElementById('escala-data');
+            if(inp) inp.value = hoje;
 
-        // 1. Carregar e Listar Ministérios em Tempo Real
-        function carregarMinisterios() {
-            const tbody = document.getElementById('ministries-table-body');
-            if (!tbody) return;
+            carregarOpcoesLogin();
+            renderMinisterios();
+            renderAnciaos();
+            renderEventos();
+            renderPadroesMinisterios();
+            atualizarSelects();
+            verificarDadosData();
+            renderResumoHoje();
+        }
 
-            db.collection(colecaoMinisterios).onSnapshot((snapshot) => {
-                tbody.innerHTML = "";
-                if (snapshot.empty) {
-                    tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-500">Nenhum ministério cadastrado.</td></tr>`;
-                    return;
+        function renderAnciaos() {}
+
+        function carregarOpcoesLogin() {
+            const select = document.getElementById('login-role-select');
+            if (!select) return;
+            let html = `<option value="ADMIN">Administrador Geral</option>`;
+            ministerios.forEach(m => {
+                html += `<option value="${m.nome}">Ministério: ${m.nome}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        function atualizarCampoSenhaLogin() {
+            document.getElementById('login-password').value = '';
+        }
+
+        function entrarComoVisitante() {
+            usuarioLogadoPerfil = 'VISITANTE';
+            transicionarParaApp("👤 Perfil: Visitante");
+        }
+
+        function fazerLoginSeguro() {
+            const perfil = document.getElementById('login-role-select').value;
+            const senhaDigitada = document.getElementById('login-password').value;
+
+            if (perfil === 'ADMIN') {
+                if (senhaDigitada !== senhaAdmin) { alert('Senha incorreta!'); return; }
+            } else {
+                usuarioLogadoPerfil = perfil;
+                transicionarParaApp(`👤 Perfil: ${perfil}`);
+                return;
+            }
+
+            usuarioLogadoPerfil = perfil;
+            transicionarParaApp(`👤 Perfil: ${perfil}`);
+        }
+
+        function transicionarParaApp(textoBadge) {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'block';
+            document.getElementById('current-user-display').innerText = textoBadge;
+            aplicarPermissoesPerfil();
+            verificarDadosData();
+        }
+
+        function sairDoSistema() {
+            document.getElementById('app-screen').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('login-password').value = '';
+        }
+
+        function aplicarPermissoesPerfil() {
+            const adminCards = document.querySelectorAll('.admin-only');
+            const ehAdmin = (usuarioLogadoPerfil === 'ADMIN');
+            adminCards.forEach(card => card.style.display = ehAdmin ? 'block' : 'none');
+            const campos = document.querySelectorAll('.field-perm');
+            campos.forEach(c => c.disabled = (usuarioLogadoPerfil === 'VISITANTE'));
+        }
+
+        function toggleCard(headerElement, event) {
+            if(event) event.stopPropagation();
+            const card = headerElement.parentElement;
+            card.classList.toggle('active');
+        }
+
+        function abrirFullscreenModal(modulo, event) {
+            if(event) event.stopPropagation();
+            moduloAtualAberto = modulo;
+            document.getElementById('fullscreen-modal').style.display = 'block';
+            
+            const abasDiv = document.getElementById('modal-abas-resumo');
+            if(modulo === 'resumo') {
+                abasDiv.style.display = 'flex';
+                abaResumoAtual = 'dia';
+                document.getElementById('btn-aba-dia').classList.add('active');
+                document.getElementById('btn-aba-mes').classList.remove('active');
+                renderConteudoModalResumo();
+            } else {
+                abasDiv.style.display = 'none';
+                const originalCardContent = document.querySelector(`#card-${modulo} .module-content`).innerHTML;
+                const cardTitle = document.querySelector(`#card-${modulo} .module-title`).innerText;
+                document.getElementById('modal-titulo-view').innerText = cardTitle;
+                document.getElementById('modal-content-body').innerHTML = originalCardContent;
+                
+                if(modulo === 'ministerios') {
+                    renderMinisterios();
+                }
+            }
+        }
+
+        function mudarAbaResumo(aba) {
+            abaResumoAtual = aba;
+            if(aba === 'dia') {
+                document.getElementById('btn-aba-dia').classList.add('active');
+                document.getElementById('btn-aba-mes').classList.remove('active');
+            } else {
+                document.getElementById('btn-aba-mes').classList.add('active');
+                document.getElementById('btn-aba-dia').classList.remove('active');
+            }
+            renderConteudoModalResumo();
+        }
+
+        function renderConteudoModalResumo() {
+            const tituloEl = document.getElementById('modal-titulo-view');
+            const corpoEl = document.getElementById('modal-content-body');
+            const hoje = new Date().toISOString().split('T')[0];
+
+            if(abaResumoAtual === 'dia') {
+                tituloEl.innerText = "☀️ Escala de Hoje (Visão Geral)";
+                const esc = escalas[hoje] || {};
+                
+                corpoEl.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800; margin-bottom: 4px;">ESCALA DE HOJE</h2>
+                        <p style="color: #94a3b8; font-size: 0.85rem;">Data Atual</p>
+                    </div>
+                    <div class="resumo-lista">
+                        <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaos[0]?.nome || 'Marcilio'}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">📖 Pregador / Orador</div><div class="resumo-value">${esc.pregador || 'A definir'}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🎤 Música Especial</div><div class="resumo-value">${esc.especial || 'A definir'}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🎶 Louvor Congregacional</div><div class="resumo-value">${esc.louvor || 'A definir'}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🛡️ Diáconos Responsáveis</div><div class="resumo-value">${esc.diaconos || 'A definir'}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🎛️ Sonoplastia / Mídia</div><div class="resumo-value">${esc.sonoplastia || 'A definir'}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🚪 Recepção</div><div class="resumo-value">${esc.recepcao || 'A definir'}</div></div>
+                    </div>
+                `;
+            } else {
+                tituloEl.innerText = "📆 Escala Completa do Mês";
+                const datasOrdenadas = Object.keys(escalas).sort();
+                let linhasTabela = "";
+                
+                if(datasOrdenadas.length === 0) {
+                    linhasTabela = `<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding: 20px;">Nenhuma escala cadastrada ainda.</td></tr>`;
+                } else {
+                    datasOrdenadas.forEach(dataStr => {
+                        const item = escalas[dataStr];
+                        const partesData = dataStr.split('-');
+                        const dataFormatada = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
+                        
+                        linhasTabela += `
+                            <tr>
+                                <td><span class="data-tag-pill">${dataFormatada}</span></td>
+                                <td>
+                                    <div><strong>Pregador:</strong> ${item.pregador || '-'}</div>
+                                    <div><strong>Louvor:</strong> ${item.louvor || '-'}</div>
+                                </td>
+                                <td>
+                                    <div><strong>Música:</strong> ${item.especial || '-'}</div>
+                                    <div><strong>Diáconos:</strong> ${item.diaconos || '-'}</div>
+                                </td>
+                            </tr>
+                        `;
+                    });
                 }
 
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const id = doc.id;
+                corpoEl.innerHTML = `
+                    <div class="escala-mes-header-info">
+                        <h2>ESCALA COMPLETA SALVA</h2>
+                        <p>Ancião Responsável: <strong>${anciaos[0]?.nome || 'Marcilio'}</strong></p>
+                    </div>
+                    <div class="tabela-mes-card">
+                        <table class="tabela-mes-grid">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%;">DATA</th>
+                                    <th style="width: 40%;">ATIVIDADES PRINCIPAIS</th>
+                                    <th style="width: 35%;">EQUIPES / APOIO</th>
+                                </tr>
+                            </thead>
+                            <tbody>${linhasTabela}</tbody>
+                        </table>
+                    </div>
+                `;
+            }
+        }
 
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-800/50 transition-colors">
-                            <td class="p-3 font-semibold text-slate-200">${escapeHtml(data.nome || '')}</td>
-                            <td class="p-3 text-slate-400">${escapeHtml(data.lider || '')}</td>
-                            <td class="p-3 text-right flex justify-end gap-2">
-                                <button onclick="prepararEdicaoMinisterio('${id}', '${escapeHtml(data.nome)}', '${escapeHtml(data.lider)}', '${escapeHtml(data.membros || '')}')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded font-bold transition-all shadow" title="Editar">
-                                    ✏️
-                                </button>
-                                <button onclick="excluirMinisterio('${id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2.5 py-1.5 rounded font-bold transition-all shadow" title="Excluir">
-                                    ❌
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }, (error) => {
-                console.error("Erro ao escutar ministérios: ", error);
+        function fecharFullscreenModal() { document.getElementById('fullscreen-modal').style.display = 'none'; }
+        function fecharModalFora(e) { if (e.target.id === 'fullscreen-modal') fecharFullscreenModal(); }
+
+        function salvarModalComoJPG() {
+            const el = document.getElementById('modal-printable-container');
+            html2canvas(el, { backgroundColor: '#1e293b' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${moduloAtualAberto || 'relatorio'}-church-pro.jpg`;
+                link.href = canvas.toDataURL('image/jpeg');
+                link.click();
             });
         }
 
-        // 2. Salvar (Inserir novo ou Atualizar existente)
-        function salvarMinisterio(event) {
-            event.preventDefault();
+        function calcularOcorrenciaDaData(dataStr) {
+            const [ano, mes, dia] = dataStr.split('-').map(Number);
+            const d = new Date(ano, mes - 1, dia);
+            const diaSemanaNum = d.getDay();
             
-            const id = document.getElementById('ministry-id').value;
-            const nome = document.getElementById('ministry-name').value.trim();
-            const lider = document.getElementById('ministry-leader').value.trim();
-            const membros = document.getElementById('ministry-members').value.trim();
+            let nomeDiaSemana = '';
+            if (diaSemanaNum === 6) nomeDiaSemana = 'Sábado';
+            else if (diaSemanaNum === 0) nomeDiaSemana = 'Domingo';
+            else if (diaSemanaNum === 3) nomeDiaSemana = 'Quarta-feira';
+            else return null;
 
-            const dadosMinisterio = {
-                nome: nome,
-                lider: lider,
-                membros: membros,
-                atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+            let contador = 0;
+            for (let dTest = 1; dTest <= dia; dTest++) {
+                const dtTemp = new Date(ano, mes - 1, dTest);
+                if (dtTemp.getDay() === diaSemanaNum) {
+                    contador++;
+                }
+            }
+
+            return `${contador}º ${nomeDiaSemana}`.replace('1º Quarta-feira', '1ª Quarta-feira').replace('2º Quarta-feira', '2ª Quarta-feira').replace('3º Quarta-feira', '3ª Quarta-feira').replace('4º Quarta-feira', '4ª Quarta-feira').replace('5º Quarta-feira', '5ª Quarta-feira');
+        }
+
+        function verificarDadosData() {
+            const dataSel = document.getElementById('escala-data').value;
+            if(!dataSel) return;
+
+            const esc = escalas[dataSel] || {};
+            document.getElementById('esc-pregador').value = esc.pregador || '';
+            document.getElementById('esc-especial').value = esc.especial || '';
+            document.getElementById('esc-louvor').value = esc.louvor || '';
+            document.getElementById('esc-diaconos').value = esc.diaconos || '';
+            document.getElementById('esc-sonoplastia').value = esc.sonoplastia || '';
+            document.getElementById('esc-recepcao').value = esc.recepcao || '';
+
+            const ocorrenciaCalculada = calcularOcorrenciaDaData(dataSel);
+            const spanMin = document.getElementById('span-min-fixo-nome');
+            
+            const padraoEncontrado = padroesFixosMinisterios.find(p => p.ocorrencia === ocorrenciaCalculada);
+            if (padraoEncontrado) {
+                spanMin.innerText = `${padraoEncontrado.ministerio} (${ocorrenciaCalculada})`;
+                window._ministerioFixoTemp = padraoEncontrado.ministerio;
+            } else {
+                spanMin.innerText = ocorrenciaCalculada ? `Nenhum definido para ${ocorrenciaCalculada}` : "Dia fora do padrão fixo";
+                window._ministerioFixoTemp = "";
+            }
+
+            aplicarPermissoesPerfil();
+        }
+
+        function selecionarMinisterioManual(nomeMinisterio) {
+            if (nomeMinisterio) {
+                document.getElementById('esc-pregador').value = nomeMinisterio;
+            }
+        }
+
+        function puxarMinisterioFixoParaEscala() {
+            if (!window._ministerioFixoTemp) {
+                alert('Nenhum ministério configurado para esta ocorrência na tabela fixa.');
+                return;
+            }
+            document.getElementById('esc-pregador').value = window._ministerioFixoTemp;
+            alert('Ministério fixo puxado para a escala com sucesso!');
+        }
+
+        async function salvarEscala(e) {
+            e.preventDefault();
+            const dataSel = document.getElementById('escala-data').value;
+            if(!dataSel) { alert('Selecione uma data!'); return; }
+
+            escalas[dataSel] = {
+                pregador: document.getElementById('esc-pregador').value,
+                especial: document.getElementById('esc-especial').value,
+                louvor: document.getElementById('esc-louvor').value,
+                diaconos: document.getElementById('esc-diaconos').value,
+                sonoplastia: document.getElementById('esc-sonoplastia').value,
+                recepcao: document.getElementById('esc-recepcao').value
             };
 
-            const btnSubmit = document.getElementById('btn-salvar-atualizar');
-            btnSubmit.disabled = true;
-            btnSubmit.innerText = "Salvando...";
+            await salvarTudoNoBanco();
+            alert('Escala salva e atualizada com sucesso!');
+            renderResumoHoje();
+        }
 
-            if (id) {
-                // Atualizar
-                db.collection(colecaoMinisterios).doc(id).update(dadosMinisterio)
-                    .then(() => {
-                        limparFormularioMinisterio();
-                        btnSubmit.disabled = false;
-                    })
-                    .catch((error) => {
-                        alert("Erro ao atualizar: " + error.message);
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerText = "Atualizar Ministério";
-                    });
+        async function excluirEscalaAtual() {
+            const dataSel = document.getElementById('escala-data').value;
+            if(!dataSel || !escalas[dataSel]) {
+                alert('Não há dados salvos para esta data.');
+                return;
+            }
+
+            if(confirm(`Deseja realmente excluir/limpar a escala do dia ${dataSel}?`)) {
+                delete escalas[dataSel];
+                await salvarTudoNoBanco();
+                verificarDadosData();
+                renderResumoHoje();
+                alert('Escala excluída com sucesso!');
+            }
+        }
+
+        function renderResumoHoje() {
+            const containers = document.querySelectorAll('#resumo-hoje');
+            if(containers.length === 0) return;
+
+            const hoje = new Date().toISOString().split('T')[0];
+            const esc = escalas[hoje] || {};
+            const ocorrenciaHoje = calcularOcorrenciaDaData(hoje);
+            const padraoHoje = padroesFixosMinisterios.find(p => p.ocorrencia === ocorrenciaHoje);
+            
+            const htmlConteudo = `
+                <div class="resumo-item"><div class="resumo-label">⛪ Ministério do Dia</div><div class="resumo-badge">${padraoHoje ? padraoHoje.ministerio : 'Livre'}</div></div>
+                <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaos[0]?.nome || 'Marcilio'}</div></div>
+                <div class="resumo-item"><div class="resumo-label">📖 Pregador</div><div class="resumo-value" style="color: #38bdf8; font-weight: 700;">${esc.pregador || 'A definir'}</div></div>
+                <div class="resumo-item"><div class="resumo-label">🎤 Música Especial</div><div class="resumo-value">${esc.especial || 'A definir'}</div></div>
+                <div class="resumo-item"><div class="resumo-label">🎶 Louvor</div><div class="resumo-value">${esc.louvor || 'A definir'}</div></div>
+            `;
+
+            containers.forEach(cont => cont.innerHTML = htmlConteudo);
+        }
+
+        // SISTEMA DE CONTEXTO UNIVERSAL CORRIGIDO DEFINITIVO
+        async function salvarMinisterioContexto(e, formElement) {
+            e.preventDefault();
+            const container = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
+            
+            const indexEdit = parseInt(container.querySelector('.min-edit-index').value);
+            const novoMinisterio = {
+                nome: container.querySelector('.min-nome').value,
+                lider: container.querySelector('.min-lider').value,
+                equipe: container.querySelector('.min-equipe').value
+            };
+
+            if (indexEdit === -1) {
+                ministerios.push(novoMinisterio);
             } else {
-                // Inserir Novo
-                dadosMinisterio.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
-                db.collection(colecaoMinisterios).add(dadosMinisterio)
-                    .then(() => {
-                        limparFormularioMinisterio();
-                        btnSubmit.disabled = false;
-                    })
-                    .catch((error) => {
-                        alert("Erro ao cadastrar: " + error.message);
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerText = "Salvar Ministério";
-                    });
+                ministerios[indexEdit] = novoMinisterio;
             }
+
+            await salvarTudoNoBanco();
+            
+            sincronizarFormulariosMinisterios();
+            renderMinisterios();
+            atualizarSelects();
+            carregarOpcoesLogin();
+
+            alert('Ministério salvo com sucesso!');
         }
 
-        // 3. Preparar formulário para Editar
-        function prepararEdicaoMinisterio(id, nome, lider, membros) {
-            document.getElementById('ministry-id').value = id;
-            document.getElementById('ministry-name').value = nome;
-            document.getElementById('ministry-leader').value = lider;
-            document.getElementById('ministry-members').value = membros;
-            
-            document.getElementById('form-action-label').innerText = "ATUALIZAR MINISTÉRIO";
-            const btn = document.getElementById('btn-salvar-atualizar');
-            btn.innerText = "Atualizar Ministério";
-            btn.className = "flex-1 bg-amber-600 hover:bg-amber-500 text-white font-bold p-2.5 rounded-lg transition-all shadow-md";
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function sincronizarFormulariosMinisterios() {
+            document.querySelectorAll('form').forEach(frm => {
+                if(frm.querySelector('.min-edit-index')) {
+                    frm.reset();
+                    const idxInput = frm.querySelector('.min-edit-index');
+                    if(idxInput) idxInput.value = "-1";
+                    const subCard = frm.closest('.sub-card');
+                    if(subCard) {
+                        const titulo = subCard.querySelector('.form-ministerio-titulo');
+                        if(titulo) titulo.innerText = '+ CADASTRAR MINISTÉRIO';
+                    }
+                    const btnSalvar = frm.querySelector('.btn-salvar-ministerio');
+                    if(btnSalvar) btnSalvar.innerText = 'Salvar Ministério';
+                    const btnCancelar = frm.querySelector('.btn-cancelar-edicao');
+                    if(btnCancelar) btnCancelar.style.display = 'none';
+                }
+            });
         }
 
-        // 4. Excluir Ministério
-        function excluirMinisterio(id) {
-            if (confirm("Tem certeza que deseja excluir permanentemente este ministério?")) {
-                db.collection(colecaoMinisterios).doc(id).delete().catch((error) => {
-                    alert("Erro ao excluir: " + error.message);
+        function renderMinisterios() {
+            const tbodies = document.querySelectorAll('.table-ministerios-body');
+            if(tbodies.length === 0) return;
+            
+            if(ministerios.length === 0) {
+                tbodies.forEach(tbody => {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum ministério cadastrado.</td></tr>`;
                 });
+                return;
+            }
+
+            const htmlRows = ministerios.map((m, i) => `
+                <tr>
+                    <td><strong>${m.nome}</strong></td>
+                    <td style="color: #94a3b8;">${m.lider}</td>
+                    <td>
+                        <button type="button" class="action-btn-edit" title="Editar" onclick="prepararEdicaoContexto(${i}, this)">✏️</button>
+                        <button type="button" class="action-btn-delete" title="Excluir" onclick="excluirMinisterio(${i})">X</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            tbodies.forEach(tbody => {
+                tbody.innerHTML = htmlRows;
+            });
+        }
+
+        function prepararEdicaoContexto(i, btnElement) {
+            const m = ministerios[i];
+            const escopo = btnElement.closest('.modal-container') || btnElement.closest('.module-card') || document.body;
+
+            escopo.querySelector('.min-edit-index').value = i;
+            escopo.querySelector('.min-nome').value = m.nome;
+            escopo.querySelector('.min-lider').value = m.lider;
+            escopo.querySelector('.min-equipe').value = m.equipe || '';
+            
+            const titulo = escopo.querySelector('.form-ministerio-titulo');
+            if(titulo) {
+                titulo.innerText = '✏️ EDITAR MINISTÉRIO';
+                titulo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            
+            const btnSalvar = escopo.querySelector('.btn-salvar-ministerio');
+            if(btnSalvar) btnSalvar.innerText = 'Atualizar Ministério';
+            
+            const btnCancelar = escopo.querySelector('.btn-cancelar-edicao');
+            if(btnCancelar) btnCancelar.style.display = 'inline-block';
+        }
+
+        function cancelarEdicaoContexto(btnElement) {
+            const escopo = btnElement.closest('.modal-container') || btnElement.closest('.module-card') || document.body;
+            escopo.querySelector('form').reset();
+            escopo.querySelector('.min-edit-index').value = '-1';
+            
+            const titulo = escopo.querySelector('.form-ministerio-titulo');
+            if(titulo) titulo.innerText = '+ CADASTRAR MINISTÉRIO';
+            
+            const btnSalvar = escopo.querySelector('.btn-salvar-ministerio');
+            if(btnSalvar) btnSalvar.innerText = 'Salvar Ministério';
+            
+            const btnCancelar = escopo.querySelector('.btn-cancelar-edicao');
+            if(btnCancelar) btnCancelar.style.display = 'none';
+        }
+
+        async function excluirMinisterio(i) {
+            const nomeMin = ministerios[i].nome;
+            if(confirm(`Deseja realmente excluir o ministério "${nomeMin}"?`)) {
+                ministerios.splice(i, 1);
+                await salvarTudoNoBanco();
+                renderMinisterios();
+                atualizarSelects();
+                carregarOpcoesLogin();
+
+                if (document.getElementById('fullscreen-modal').style.display === 'block' && moduloAtualAberto === 'ministerios') {
+                    document.getElementById('modal-content-body').innerHTML = document.querySelector('#card-ministerios .module-content').innerHTML;
+                    renderMinisterios();
+                }
             }
         }
 
-        // 5. Limpar os campos do formulário
-        function limparFormularioMinisterio() {
-            document.getElementById('ministry-id').value = "";
-            document.getElementById('ministry-name').value = "";
-            document.getElementById('ministry-leader').value = "";
-            document.getElementById('ministry-members').value = "";
-            
-            document.getElementById('form-action-label').innerText = "CADASTRAR NOVO MINISTÉRIO";
-            const btn = document.getElementById('btn-salvar-atualizar');
-            btn.innerText = "Salvar Ministério";
-            btn.className = "flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-2.5 rounded-lg transition-all shadow-md";
-            btn.disabled = false;
+        async function salvarEvento(e) {
+            e.preventDefault();
+            eventos.push({
+                nome: document.getElementById('ev-nome').value,
+                dataInicio: document.getElementById('ev-data-inicio').value,
+                dataFim: document.getElementById('ev-data-fim').value
+            });
+            await salvarTudoNoBanco();
+            document.getElementById('form-evento').reset();
+            renderEventos();
         }
 
-        // Segurança contra quebras de texto HTML nas aspas
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.toString().replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        function renderEventos() {
+            const tbody = document.getElementById('table-eventos');
+            if(!tbody) return;
+            tbody.innerHTML = eventos.map((ev, i) => `
+                <tr><td><strong>${ev.nome}</strong></td><td>${ev.dataInicio}</td><td><button class="btn btn-danger" onclick="excluirEvento(${i})">X</button></td></tr>
+            `).join('');
         }
 
-        // Inicializar assim que carregar a página
-        window.addEventListener('DOMContentLoaded', () => {
-            carregarMinisterios();
-        });
+        async function excluirEvento(i) {
+            eventos.splice(i, 1);
+            await salvarTudoNoBanco();
+            renderEventos();
+        }
+
+        async function salvarPadraoMinisterio(e) {
+            e.preventDefault();
+            const ocorrenciaSel = document.getElementById('mindia-ocorrencia').value;
+            const minSel = document.getElementById('mindia-ministerio').value;
+
+            padroesFixosMinisterios = padroesFixosMinisterios.filter(p => p.ocorrencia !== ocorrenciaSel);
+
+            padroesFixosMinisterios.push({
+                ocorrencia: ocorrenciaSel,
+                ministerio: minSel
+            });
+
+            await salvarTudoNoBanco();
+            renderPadroesMinisterios();
+            verificarDadosData();
+            alert('Padrão fixo do mês salvo com sucesso!');
+        }
+
+        function renderPadroesMinisterios() {
+            const tbody = document.getElementById('table-dias-ministerios');
+            if(!tbody) return;
+            if(padroesFixosMinisterios.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum padrão fixado ainda.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = padroesFixosMinisterios.map((p, i) => `
+                <tr><td><span class="tag tag-purple">${p.ocorrencia}</span></td><td>${p.ministerio}</td><td><button class="btn btn-danger" onclick="excluirPadraoMinisterio(${i})">X</button></td></tr>
+            `).join('');
+        }
+
+        async function excluirPadraoMinisterio(i) {
+            padroesFixosMinisterios.splice(i, 1);
+            await salvarTudoNoBanco();
+            renderPadroesMinisterios();
+            verificarDadosData();
+        }
+
+        function atualizarSelects() {
+            const selectMinDia = document.getElementById('mindia-ministerio');
+            const selectMinEscala = document.getElementById('esc-ministerio-select');
+
+            const options = ministerios.length === 0 
+                ? `<option value="">Nenhum ministério cadastrado</option>`
+                : ministerios.map(m => `<option value="${m.nome}">${m.nome}</option>`).join('');
+
+            if(selectMinDia) selectMinDia.innerHTML = options;
+            if(selectMinEscala) selectMinEscala.innerHTML = `<option value="">-- Selecionar Ministério Cadastrado --</option>` + options;
+        }
+
+        carregarDadosDoBanco();
     </script>
 </body>
 </html>
