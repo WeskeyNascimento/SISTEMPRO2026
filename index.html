@@ -108,36 +108,36 @@
 <body>
 
     <div id="loading-cloud">
-        <div>☁️ Conectando ao Banco de Dados do Firebase...[cite: 1]</div>
-        <div style="font-size: 0.8rem; color: #94a3b8;">Aguarde um instante.[cite: 1]</div>
+        <div>☁️ Conectando ao Banco de Dados do Firebase...</div>
+        <div style="font-size: 0.8rem; color: #94a3b8;">Aguarde um instante.</div>
     </div>
 
     <!-- TELA DE LOGIN -->
     <div id="auth-screen">
         <div class="auth-card">
             <div class="auth-logo">CHURCH <span>PRO</span></div>
-            <div class="auth-subtitle">Gestão de Escalas e Ministérios[cite: 1]</div>
+            <div class="auth-subtitle">Gestão de Escalas e Ministérios</div>
             
             <button class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 0.95rem; margin-bottom: 15px;" onclick="entrarComoVisitante()">
-                👀 Acessar como Visitante[cite: 1]
+                👀 Acessar como Visitante
             </button>
             
             <div class="auth-divider"><span>Ou</span></div>
 
             <div class="form-group" style="text-align: left; margin-top: 15px;">
-                <label>Selecionar Perfil / Liderança[cite: 1]</label>
+                <label>Selecionar Perfil / Liderança</label>
                 <select id="login-role-select" class="form-control" onchange="atualizarCampoSenhaLogin()">
-                    <option value="ADMIN">Administrador Geral[cite: 1]</option>
+                    <option value="ADMIN">Administrador Geral</option>
                 </select>
             </div>
             
             <div class="form-group" style="text-align: left;">
-                <label>Senha de Acesso[cite: 1]</label>
-                <input type="password" id="login-password" class="form-control" placeholder="Digite sua senha...">[cite: 1]
+                <label>Senha de Acesso</label>
+                <input type="password" id="login-password" class="form-control" placeholder="Digite sua senha...">
             </div>
 
             <button class="btn btn-success" style="width: 100%; padding: 12px; font-size: 0.9rem; margin-top: 5px;" onclick="fazerLoginSeguro()">
-                🔐 Entrar no Sistema[cite: 1]
+                🔐 Entrar no Sistema
             </button>
         </div>
     </div>
@@ -147,8 +147,8 @@
         <div class="navbar">
             <div class="nav-brand">PAINEL DE CONTROLE <span>PRO</span></div>
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="user-badge" id="current-user-display">👤 Perfil: Administrador[cite: 1]</div>
-                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.75rem;" onclick="sairDoSistema()">🚪 Sair / Trocar Perfil[cite: 1]</button>
+                <div class="user-badge" id="current-user-display">👤 Perfil: Administrador</div>
+                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.75rem;" onclick="sairDoSistema()">🚪 Sair / Trocar Perfil</button>
             </div>
         </div>
 
@@ -156,10 +156,10 @@
             <!-- CARD 1: RESUMO / ESCALA DO MÊS -->
             <div class="module-card active" id="card-resumo">
                 <div class="module-header" onclick="toggleCard(this, event)">
-                    <div class="module-title">☀️ Escala de Hoje (Resumo)[cite: 1]</div>
+                    <div class="module-title">☀️ Escala de Hoje (Resumo)</div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="btn btn-primary" onclick="abrirFullscreenModal('resumo', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('resumo', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
                     </div>
                 </div>
                 <div class="module-content">
@@ -170,17 +170,17 @@
             <!-- CARD 2: ORGANIZAÇÃO DO CULTO -->
             <div class="module-card" id="card-culto">
                 <div class="module-header" onclick="toggleCard(this, event)">
-                    <div class="module-title">📖 Organização do Culto do Dia[cite: 1]</div>
+                    <div class="module-title">📖 Organização do Culto do Dia</div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="btn btn-primary" onclick="abrirFullscreenModal('culto', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('culto', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
                     </div>
                 </div>
                 <div class="module-content">
                     <div class="sub-card">
-                        <div class="sub-title">Ordem do Culto & Informações[cite: 1]</div>
+                        <div class="sub-title">Ordem do Culto & Informações</div>
                         <div id="organizacao-culto-preview" style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5;">
-                            <em>Exibição dinâmica das programações do dia...</em>[cite: 1]
+                            <em>Exibição dinâmica das programações do dia...</em>
                         </div>
                     </div>
                 </div>
@@ -189,43 +189,43 @@
             <!-- CARD 3: MONTAR ESCALA -->
             <div class="module-card active" id="card-escala">
                 <div class="module-header" onclick="toggleCard(this, event)">
-                    <div class="module-title">📝 Montar Escala do Dia[cite: 1]</div>
+                    <div class="module-title">📝 Montar Escala do Dia</div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="btn btn-primary" onclick="abrirFullscreenModal('escala', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('escala', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
                     </div>
                 </div>
                 <div class="module-content">
                     <div class="sub-card">
-                        <div class="sub-title">Preencher e Gerenciar Escala[cite: 1]</div>
+                        <div class="sub-title">Preencher e Gerenciar Escala</div>
                         <form id="form-escala" onsubmit="salvarEscala(event)">
                             <div class="form-group">
-                                <label>Data da Escala[cite: 1]</label>
-                                <input type="date" id="escala-data" class="form-control" required onchange="verificarDadosData()">[cite: 1]
+                                <label>Data da Escala</label>
+                                <input type="date" id="escala-data" class="form-control" required onchange="verificarDadosData()">
                             </div>
                             
                             <div id="bloco-ministerio-fixo" class="ministerio-fixo-card">
-                                <div>🏛️ Ministério Sugerido (Padrão): <span id="span-min-fixo-nome">Nenhum definido</span></div>[cite: 1]
-                                <button type="button" class="btn-puxar" onclick="puxarMinisterioFixoParaEscala()">Puxar para Escala</button>[cite: 1]
+                                <div>🏛️ Ministério Sugerido (Padrão): <span id="span-min-fixo-nome">Nenhum definido</span></div>
+                                <button type="button" class="btn-puxar" onclick="puxarMinisterioFixoParaEscala()">Puxar para Escala</button>
                             </div>
 
                             <div class="form-group">
-                                <label>Ministério / Pregador do Dia[cite: 1]</label>
+                                <label>Ministério / Pregador do Dia</label>
                                 <select id="esc-ministerio-select" class="form-control field-perm" onchange="selecionarMinisterioManual(this.value)">
-                                    <option value="">-- Selecionar Ministério Cadastrado --</option>[cite: 1]
+                                    <option value="">-- Selecionar Ministério Cadastrado --</option>
                                 </select>
                             </div>
                             
-                            <div class="form-group"><label>Pregador / Orador[cite: 1]</label><input type="text" id="esc-pregador" class="form-control field-perm" placeholder="Ex: Min. Adolescentes ou Nome do Pregador"></div>[cite: 1]
-                            <div class="form-group"><label>Música Especial[cite: 1]</label><input type="text" id="esc-especial" class="form-control field-perm" placeholder="Ex: I9Teens"></div>[cite: 1]
-                            <div class="form-group"><label>Louvor Congregacional[cite: 1]</label><input type="text" id="esc-louvor" class="form-control field-perm" placeholder="Ex: I9Teens"></div>[cite: 1]
-                            <div class="form-group"><label>Diáconos Responsáveis[cite: 1]</label><input type="text" id="esc-diaconos" class="form-control field-perm" placeholder="Ex: Marlene B."></div>[cite: 1]
-                            <div class="form-group"><label>Sonoplastia / Mídia[cite: 1]</label><input type="text" id="esc-sonoplastia" class="form-control field-perm" placeholder="Ex: W. Nascimento"></div>[cite: 1]
-                            <div class="form-group"><label>Recepção[cite: 1]</label><input type="text" id="esc-recepcao" class="form-control field-perm" placeholder="Ex: Miranda"></div>[cite: 1]
+                            <div class="form-group"><label>Pregador / Orador</label><input type="text" id="esc-pregador" class="form-control field-perm" placeholder="Ex: Min. Adolescentes ou Nome do Pregador"></div>
+                            <div class="form-group"><label>Música Especial</label><input type="text" id="esc-especial" class="form-control field-perm" placeholder="Ex: I9Teens"></div>
+                            <div class="form-group"><label>Louvor Congregacional</label><input type="text" id="esc-louvor" class="form-control field-perm" placeholder="Ex: I9Teens"></div>
+                            <div class="form-group"><label>Diáconos Responsáveis</label><input type="text" id="esc-diaconos" class="form-control field-perm" placeholder="Ex: Marlene B."></div>
+                            <div class="form-group"><label>Sonoplastia / Mídia</label><input type="text" id="esc-sonoplastia" class="form-control field-perm" placeholder="Ex: W. Nascimento"></div>
+                            <div class="form-group"><label>Recepção</label><input type="text" id="esc-recepcao" class="form-control field-perm" placeholder="Ex: Miranda"></div>
                             
                             <div style="display: flex; gap: 8px; margin-top: 10px;">
-                                <button type="submit" class="btn btn-success" style="flex: 2;">Salvar e Atualizar Escala[cite: 1]</button>
-                                <button type="button" class="btn btn-danger" style="flex: 1;" onclick="excluirEscalaAtual()">Excluir Escala[cite: 1]</button>
+                                <button type="submit" class="btn btn-success" style="flex: 2;">Salvar e Atualizar Escala</button>
+                                <button type="button" class="btn btn-danger" style="flex: 1;" onclick="excluirEscalaAtual()">Excluir Escala</button>
                             </div>
                         </form>
                     </div>
@@ -235,80 +235,80 @@
             <!-- CARD 4: DIAS DE MINISTÉRIOS -->
             <div class="module-card admin-only active" id="card-diasMinisterios">
                 <div class="module-header" onclick="toggleCard(this, event)">
-                    <div class="module-title">⛪ Dias de Ministérios (Tabela Fixa)[cite: 1]</div>
+                    <div class="module-title">⛪ Dias de Ministérios (Tabela Fixa)</div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="btn btn-primary" onclick="abrirFullscreenModal('diasMinisterios', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('diasMinisterios', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
                     </div>
                 </div>
                 <div class="module-content">
                     <div class="sub-card">
-                        <div class="sub-title">➕ Configurar Padrão Fixo do Mês[cite: 1]</div>
+                        <div class="sub-title">➕ Configurar Padrão Fixo do Mês</div>
                         <form id="form-ministerio-dia" onsubmit="salvarPadraoMinisterio(event)">
                             <div class="form-group">
-                                <label>Ocorrência[cite: 1]</label>
+                                <label>Ocorrência</label>
                                 <select id="mindia-ocorrencia" class="form-control" required>
-                                    <option value="1º Sábado">1º Sábado</option>[cite: 1]
-                                    <option value="2º Sábado">2º Sábado</option>[cite: 1]
-                                    <option value="3º Sábado">3º Sábado</option>[cite: 1]
-                                    <option value="4º Sábado">4º Sábado</option>[cite: 1]
-                                    <option value="5º Sábado">5º Sábado</option>[cite: 1]
-                                    <option value="1º Domingo">1º Domingo</option>[cite: 1]
-                                    <option value="2º Domingo">2º Domingo</option>[cite: 1]
-                                    <option value="3º Domingo">3º Domingo</option>[cite: 1]
-                                    <option value="4º Domingo">4º Domingo</option>[cite: 1]
-                                    <option value="5º Domingo">5º Domingo</option>[cite: 1]
-                                    <option value="1ª Quarta-feira">1ª Quarta-feira</option>[cite: 1]
-                                    <option value="2ª Quarta-feira">2ª Quarta-feira</option>[cite: 1]
-                                    <option value="3ª Quarta-feira">3ª Quarta-feira</option>[cite: 1]
-                                    <option value="4ª Quarta-feira">4ª Quarta-feira</option>[cite: 1]
-                                    <option value="5ª Quarta-feira">5ª Quarta-feira</option>[cite: 1]
+                                    <option value="1º Sábado">1º Sábado</option>
+                                    <option value="2º Sábado">2º Sábado</option>
+                                    <option value="3º Sábado">3º Sábado</option>
+                                    <option value="4º Sábado">4º Sábado</option>
+                                    <option value="5º Sábado">5º Sábado</option>
+                                    <option value="1º Domingo">1º Domingo</option>
+                                    <option value="2º Domingo">2º Domingo</option>
+                                    <option value="3º Domingo">3º Domingo</option>
+                                    <option value="4º Domingo">4º Domingo</option>
+                                    <option value="5º Domingo">5º Domingo</option>
+                                    <option value="1ª Quarta-feira">1ª Quarta-feira</option>
+                                    <option value="2ª Quarta-feira">2ª Quarta-feira</option>
+                                    <option value="3ª Quarta-feira">3ª Quarta-feira</option>
+                                    <option value="4ª Quarta-feira">4ª Quarta-feira</option>
+                                    <option value="5ª Quarta-feira">5ª Quarta-feira</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Ministério Responsável[cite: 1]</label>
-                                <select id="mindia-ministerio" class="form-control" required></select>[cite: 1]
+                                <label>Ministério Responsável</label>
+                                <select id="mindia-ministerio" class="form-control" required></select>
                             </div>
-                            <button type="submit" class="btn btn-success" style="width:100%;">Salvar na Tabela Fixa[cite: 1]</button>
+                            <button type="submit" class="btn btn-success" style="width:100%;">Salvar na Tabela Fixa</button>
                         </form>
                     </div>
                     <div class="sub-card" style="max-height:220px; overflow-y:auto;">
-                        <div class="sub-title">Tabela Fixa Ativa[cite: 1]</div>
+                        <div class="sub-title">Tabela Fixa Ativa</div>
                         <table>
-                            <thead><tr><th>Ocorrência</th><th>Ministério</th><th>Ação</th></tr></thead>[cite: 1]
+                            <thead><tr><th>Ocorrência</th><th>Ministério</th><th>Ação</th></tr></thead>
                             <tbody id="table-dias-ministerios"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- CARD 5: MINISTÉRIOS & EQUIPE (ESTRUTURA ORIGINAL ADEQUADA) -->
+            <!-- CARD 5: MINISTÉRIOS & EQUIPE -->
             <div class="module-card admin-only active" id="card-ministerios">
                 <div class="module-header" onclick="toggleCard(this, event)">
-                    <div class="module-title">📋 Ministérios & Cadastro[cite: 1]</div>
+                    <div class="module-title">📋 Ministérios & Cadastro</div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="btn btn-primary" onclick="abrirFullscreenModal('ministerios', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('ministerios', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
                     </div>
                 </div>
                 <div class="module-content">
                     <div class="sub-card area-form-ministerio">
-                        <div class="sub-title form-ministerio-titulo">+ CADASTRAR MINISTÉRIO[cite: 1]</div>
+                        <div class="sub-title form-ministerio-titulo">+ CADASTRAR MINISTÉRIO</div>
                         <form onsubmit="salvarMinisterioContexto(event, this)">
-                            <input type="hidden" class="min-edit-index" value="-1">[cite: 1]
-                            <div class="form-group"><label>Nome do Ministério[cite: 1]</label><input type="text" class="min-nome form-control" required placeholder="Ex: Diaconato"></div>[cite: 1]
-                            <div class="form-group"><label>Líder do Ministério[cite: 1]</label><input type="text" class="min-lider form-control" required placeholder="Nome do Líder"></div>[cite: 1]
-                            <div class="form-group"><label>Membros da Equipe[cite: 1]</label><input type="text" class="min-equipe form-control" placeholder="Separados por vírgula"></div>[cite: 1]
+                            <input type="hidden" class="min-edit-index" value="-1">
+                            <div class="form-group"><label>Nome do Ministério</label><input type="text" class="min-nome form-control" required placeholder="Ex: Diaconato"></div>
+                            <div class="form-group"><label>Líder do Ministério</label><input type="text" class="min-lider form-control" required placeholder="Nome do Líder"></div>
+                            <div class="form-group"><label>Membros da Equipe</label><input type="text" class="min-equipe form-control" placeholder="Separados por vírgula"></div>
                             <div style="display: flex; gap: 8px;">
-                                <button type="submit" class="btn btn-success btn-salvar-ministerio" style="flex: 2; width: 100%;">Salvar Ministério[cite: 1]</button>
-                                <button type="button" class="btn btn-danger btn-cancelar-edicao" style="flex: 1; display: none;" onclick="cancelarEdicaoContexto(this)">Cancelar[cite: 1]</button>
+                                <button type="submit" class="btn btn-success btn-salvar-ministerio" style="flex: 2; width: 100%;">Salvar Ministério</button>
+                                <button type="button" class="btn btn-danger btn-cancelar-edicao" style="flex: 1; display: none;" onclick="cancelarEdicaoContexto(this)">Cancelar</button>
                             </div>
                         </form>
                     </div>
                     <div class="sub-card" style="max-height:280px; overflow-y:auto;">
-                        <div class="sub-title">Ministérios Ativos[cite: 1]</div>
+                        <div class="sub-title">Ministérios Ativos</div>
                         <table>
-                            <thead><tr><th>Nome</th><th>Líder</th><th>Ações</th></tr></thead>[cite: 1]
+                            <thead><tr><th>Nome</th><th>Líder</th><th>Ações</th></tr></thead>
                             <tbody class="table-ministerios-body"></tbody>
                         </table>
                     </div>
@@ -318,28 +318,28 @@
             <!-- CARD 6: EVENTOS -->
             <div class="module-card admin-only" id="card-eventos">
                 <div class="module-header" onclick="toggleCard(this, event)">
-                    <div class="module-title">📅 Eventos & Cultos Especiais[cite: 1]</div>
+                    <div class="module-title">📅 Eventos & Cultos Especiais</div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="btn btn-primary" onclick="abrirFullscreenModal('eventos', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia[cite: 1]</button>
-                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>[cite: 1]
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('eventos', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
                     </div>
                 </div>
                 <div class="module-content">
                     <div class="sub-card">
-                        <div class="sub-title">➕ Agendar Evento[cite: 1]</div>
+                        <div class="sub-title">➕ Agendar Evento</div>
                         <form id="form-evento" onsubmit="salvarEvento(event)">
-                            <div class="form-group"><label>Nome do Evento[cite: 1]</label><input type="text" id="ev-nome" class="form-control" required placeholder="Ex: Dia dos Adolescentes"></div>[cite: 1]
+                            <div class="form-group"><label>Nome do Evento</label><input type="text" id="ev-nome" class="form-control" required placeholder="Ex: Dia dos Adolescentes"></div>
                             <div style="display:flex; gap:8px;">
-                                <div class="form-group" style="flex:1;"><label>Início[cite: 1]</label><input type="date" id="ev-data-inicio" class="form-control" required></div>[cite: 1]
-                                <div class="form-group" style="flex:1;"><label>Término[cite: 1]</label><input type="date" id="ev-data-fim" class="form-control" required></div>[cite: 1]
+                                <div class="form-group" style="flex:1;"><label>Início</label><input type="date" id="ev-data-inicio" class="form-control" required></div>
+                                <div class="form-group" style="flex:1;"><label>Término</label><input type="date" id="ev-data-fim" class="form-control" required></div>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Agendar Evento[cite: 1]</button>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Agendar Evento</button>
                         </form>
                     </div>
                     <div class="sub-card" style="max-height:200px; overflow-y:auto;">
-                        <div class="sub-title">Programação Marcada[cite: 1]</div>
+                        <div class="sub-title">Programação Marcada</div>
                         <table>
-                            <thead><tr><th>Evento</th><th>Data</th><th>Ação</th></tr></thead>[cite: 1]
+                            <thead><tr><th>Evento</th><th>Data</th><th>Ação</th></tr></thead>
                             <tbody id="table-eventos"></tbody>
                         </table>
                     </div>
@@ -352,17 +352,17 @@
     <div id="fullscreen-modal" class="fullscreen-modal" onclick="fecharModalFora(event)">
         <div class="modal-container" id="modal-printable-container">
             <div class="modal-toolbar no-print">
-                <div class="modal-title" id="modal-titulo-view">Painel Completo[cite: 1]</div>
+                <div class="modal-title" id="modal-titulo-view">Painel Completo</div>
                 <div class="action-buttons">
-                    <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir / PDF[cite: 1]</button>
-                    <button class="btn btn-warning" onclick="salvarModalComoJPG()">📷 Salvar JPG[cite: 1]</button>
+                    <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir / PDF</button>
+                    <button class="btn btn-warning" onclick="salvarModalComoJPG()">📷 Salvar JPG</button>
                     <button class="close-btn" onclick="fecharFullscreenModal()">✖</button>
                 </div>
             </div>
             
             <div id="modal-abas-resumo" class="modal-tabs" style="display:none;">
-                <button class="modal-tab-btn active" id="btn-aba-dia" onclick="mudarAbaResumo('dia')">📅 Escala do Dia[cite: 1]</button>
-                <button class="modal-tab-btn" id="btn-aba-mes" onclick="mudarAbaResumo('mes')">📆 Escala do Mês[cite: 1]</button>
+                <button class="modal-tab-btn active" id="btn-aba-dia" onclick="mudarAbaResumo('dia')">📅 Escala do Dia</button>
+                <button class="modal-tab-btn" id="btn-aba-mes" onclick="mudarAbaResumo('mes')">📆 Escala do Mês</button>
             </div>
 
             <div id="modal-content-body"></div>
@@ -394,51 +394,74 @@
         let abaResumoAtual = 'dia';
 
         const listaMinisteriosPadrao = [
-            { nome: 'Jovens (JA)', lider: 'Manoel', equipe: 'Equipe JA' },[cite: 1]
-            { nome: 'Música', lider: 'Ana', equipe: 'Coral e Músicos' },[cite: 1]
-            { nome: 'Ministério Pessoal', lider: 'Wesley', equipe: 'Equipe MP' },[cite: 1]
-            { nome: 'ASA', lider: 'Ester', equipe: 'Assistência Social' },[cite: 1]
-            { nome: 'Desbravadores', lider: 'Jean', equipe: 'Diretoria DBV' },[cite: 1]
-            { nome: 'Aventureiros', lider: 'Natalia', equipe: 'Diretoria AVT' },[cite: 1]
-            { nome: 'Familia', lider: 'Marcilio e Aline', equipe: 'Liderança' },[cite: 1]
-            { nome: 'Homens', lider: 'Jansen', equipe: 'Ministério Masculino' },[cite: 1]
-            { nome: 'Escola Sabatina', lider: 'Aline', equipe: 'Professores' },[cite: 1]
-            { nome: 'Saude e temperança', lider: 'Mariane', equipe: 'Apoio' },[cite: 1]
-            { nome: 'Mulher', lider: 'Meire', equipe: 'Ministério da Mulher' },[cite: 1]
-            { nome: 'Comunicação', lider: 'Ana Sofia', equipe: 'Mídia e Redes' },[cite: 1]
-            { nome: 'Sonoplastia', lider: 'Ernande', equipe: 'Áudio' },[cite: 1]
-            { nome: 'Diaconato', lider: 'Wesley Lessa e Rose', equipe: 'Diáconos e Diaconisas' },[cite: 1]
-            { nome: 'Infantil', lider: 'Juliana', equipe: 'Professores Infantis' },[cite: 1]
-            { nome: 'Adolescentes (19Teen)', lider: 'Raphaela', equipe: 'Equipe I9Teens' },[cite: 1]
-            { nome: 'Patrimonio', lider: 'Indefinido', equipe: 'Zeladoria' },[cite: 1]
-            { nome: 'Mordomia', lider: 'Divina Ferreira', equipe: 'Mordomia Cristã' }[cite: 1]
+            { nome: 'Jovens (JA)', lider: 'Manoel', equipe: 'Equipe JA' },
+            { nome: 'Música', lider: 'Ana', equipe: 'Coral e Músicos' },
+            { nome: 'Ministério Pessoal', lider: 'Wesley', equipe: 'Equipe MP' },
+            { nome: 'ASA', lider: 'Ester', equipe: 'Assistência Social' },
+            { nome: 'Desbravadores', lider: 'Jean', equipe: 'Diretoria DBV' },
+            { nome: 'Aventureiros', lider: 'Natalia', equipe: 'Diretoria AVT' },
+            { nome: 'Familia', lider: 'Marcilio e Aline', equipe: 'Liderança' },
+            { nome: 'Homens', lider: 'Jansen', equipe: 'Ministério Masculino' },
+            { nome: 'Escola Sabatina', lider: 'Aline', equipe: 'Professores' },
+            { nome: 'Saude e temperança', lider: 'Mariane', equipe: 'Apoio' },
+            { nome: 'Mulher', lider: 'Meire', equipe: 'Ministério da Mulher' },
+            { nome: 'Comunicação', lider: 'Ana Sofia', equipe: 'Mídia e Redes' },
+            { nome: 'Sonoplastia', lider: 'Ernande', equipe: 'Áudio' },
+            { nome: 'Diaconato', lider: 'Wesley Lessa e Rose', equipe: 'Diáconos e Diaconisas' },
+            { nome: 'Infantil', lider: 'Juliana', equipe: 'Professores Infantis' },
+            { nome: 'Adolescentes (19Teen)', lider: 'Raphaela', equipe: 'Equipe I9Teens' },
+            { nome: 'Patrimonio', lider: 'Indefinido', equipe: 'Zeladoria' },
+            { nome: 'Mordomia', lider: 'Divina Ferreira', equipe: 'Mordomia Cristã' }
         ];
 
         async function carregarDadosDoBanco() {
+            // Timeout de segurança: se o Firebase demorar mais de 4 segundos, abre o painel mesmo assim
+            let carregou = false;
+            const timeoutSeguranca = setTimeout(() => {
+                if (!carregou) {
+                    console.warn("⚠️ Firebase demorou para responder. Carregando dados locais de segurança...");
+                    carregou = true;
+                    ministerios = listaMinisteriosPadrao;
+                    padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                    document.getElementById('loading-cloud').style.display = 'none';
+                    initSistema();
+                }
+            }, 4000);
+
             try {
                 const docRef = dbNovo.collection("dados_igreja").doc("principal");
                 const docSnap = await docRef.get();
 
-                if (docSnap.exists) {
-                    const dados = docSnap.data();
-                    senhaAdmin = dados.senhaAdmin || 'admin123';
-                    anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
-                    ministerios = (dados.ministerios && dados.ministerios.length > 0) ? dados.ministerios : listaMinisteriosPadrao;
-                    eventos = dados.eventos || [];
-                    padroesFixosMinisterios = dados.padroesFixosMinisterios || [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
-                    escalas = dados.escalas || {};
-                } else {
-                    ministerios = listaMinisteriosPadrao;
-                    padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
-                    escalas = {};
+                if (!carregou) {
+                    carregou = true;
+                    clearTimeout(timeoutSeguranca);
+
+                    if (docSnap.exists) {
+                        const dados = docSnap.data();
+                        senhaAdmin = dados.senhaAdmin || 'admin123';
+                        anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
+                        ministerios = (dados.ministerios && dados.ministerios.length > 0) ? dados.ministerios : listaMinisteriosPadrao;
+                        eventos = dados.eventos || [];
+                        padroesFixosMinisterios = dados.padroesFixosMinisterios || [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                        escalas = dados.escalas || {};
+                    } else {
+                        ministerios = listaMinisteriosPadrao;
+                        padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                        escalas = {};
+                    }
+                    await salvarTudoNoBanco();
+                    document.getElementById('loading-cloud').style.display = 'none';
+                    initSistema();
                 }
-                await salvarTudoNoBanco();
             } catch (error) {
                 console.error("Erro ao carregar do Firebase:", error);
-                ministerios = listaMinisteriosPadrao;
-            } finally {
-                document.getElementById('loading-cloud').style.display = 'none';
-                initSistema();
+                if (!carregou) {
+                    carregou = true;
+                    clearTimeout(timeoutSeguranca);
+                    ministerios = listaMinisteriosPadrao;
+                    document.getElementById('loading-cloud').style.display = 'none';
+                    initSistema();
+                }
             }
         }
 
@@ -780,7 +803,6 @@
             containers.forEach(cont => cont.innerHTML = htmlConteudo);
         }
 
-        // SISTEMA DE CONTEXTO UNIVERSAL CORRIGIDO DEFINITIVO
         async function salvarMinisterioContexto(e, formElement) {
             e.preventDefault();
             const container = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
