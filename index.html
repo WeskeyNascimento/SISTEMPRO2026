@@ -39,7 +39,7 @@
         .module-card.active { border-color: #38bdf8; }
 
         .module-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s ease-out, opacity 0.3s ease, padding 0.4s ease; padding: 0 25px; }
-        .module-card.active .module-content { max-height: 2000px; opacity: 1; padding: 10px 25px 25px 25px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .module-card.active .module-content { max-height: 2500px; opacity: 1; padding: 10px 25px 25px 25px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
 
         .sub-card { background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-top: 15px; }
         .sub-title { font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
@@ -61,10 +61,8 @@
         .btn-danger { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
         .btn:hover { opacity: 0.9; transform: scale(0.98); }
 
-        .action-btn-edit { background-color: #f59e0b; color: white; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; margin-right: 4px; }
-        .action-btn-edit:hover { background-color: #d97706; }
+        .action-btn-edit { background-color: #f59e0b; color: white; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: 0.2s; margin-right: 4px; }
         .action-btn-delete { background-color: rgba(239, 68, 68, 0.25); color: #fca5a5; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; transition: 0.2s; }
-        .action-btn-delete:hover { background-color: rgba(239, 68, 68, 0.4); color: white; }
 
         .tag { padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; display: inline-block; margin: 2px; }
         .tag-purple { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; }
@@ -72,7 +70,6 @@
         .ministerio-fixo-card { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 10px; padding: 10px 14px; margin-top: -4px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: #e2e8f0; }
         .ministerio-fixo-card span { color: #c084fc; font-weight: 700; }
         .btn-puxar { background: #0284c7; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-puxar:hover { background: #0369a1; }
 
         .resumo-lista { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .resumo-item { display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.7); padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; position: relative; overflow: hidden; }
@@ -345,6 +342,63 @@
                     </div>
                 </div>
             </div>
+
+            <!-- CARD 7: NOVO - CADASTRO DE USUÁRIOS E BACKUP DEDICADO -->
+            <div class="module-card admin-only active" id="card-usuarios-backup">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">🔐 Usuários, Lideranças & Backup no Firebase</div>
+                    <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                </div>
+                <div class="module-content">
+                    <!-- Sub-card Cadastro de Usuários / Líderes -->
+                    <div class="sub-card">
+                        <div class="sub-title">➕ Cadastrar Líder / Usuário com Senha</div>
+                        <form id="form-cad-usuario" onsubmit="salvarUsuarioSistema(event)">
+                            <div class="form-group">
+                                <label>Nome do Líder / Usuário</label>
+                                <input type="text" id="user-cad-nome" class="form-control" required placeholder="Ex: Pr. João ou Ana Música">
+                            </div>
+                            <div class="form-group">
+                                <label>Perfil / Ministério Associado</label>
+                                <select id="user-cad-perfil" class="form-control" required>
+                                    <option value="Líder de Ministério">Líder de Ministério (Geral)</option>
+                                    <option value="Música">Música</option>
+                                    <option value="Diaconato">Diaconato</option>
+                                    <option value="Jovens (JA)">Jovens (JA)</option>
+                                    <option value="Desbravadores">Desbravadores</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Senha de Acesso</label>
+                                <input type="password" id="user-cad-senha" class="form-control" required placeholder="Digite a senha de login...">
+                            </div>
+                            <button type="submit" class="btn btn-success" style="width:100%;">Salvar Usuário no Firebase</button>
+                        </form>
+                    </div>
+
+                    <div class="sub-card" style="max-height:200px; overflow-y:auto;">
+                        <div class="sub-title">Usuários Cadastrados</div>
+                        <table>
+                            <thead><tr><th>Nome</th><th>Perfil</th><th>Ação</th></tr></thead>
+                            <tbody id="table-usuarios-sistema">
+                                <tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum usuário cadastrado.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sub-card Backup em Documento Separado -->
+                    <div class="sub-card" style="border-color: rgba(56, 189, 248, 0.3);">
+                        <div class="sub-title" style="color: #38bdf8;">☁️ Backup em Documento Separado (Firebase)</div>
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">
+                            Salva uma cópia espelho completa de todos os dados do sistema em um documento independente chamado <code>backup_sistema</code> no Firestore.
+                        </p>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" class="btn btn-primary" style="flex: 1;" onclick="fazerBackupNoFirebase()">💾 Fazer Backup Agora</button>
+                            <button type="button" class="btn btn-warning" style="flex: 1;" onclick="restaurarBackupDoFirebase()">🔄 Restaurar Backup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -388,6 +442,7 @@
         let eventos = [];
         let padroesFixosMinisterios = [];
         let escalas = {};
+        let usuariosSistema = []; // Novo array para usuários e líderes cadastrados
         
         let usuarioLogadoPerfil = 'VISITANTE';
         let moduloAtualAberto = '';
@@ -415,50 +470,32 @@
         ];
 
         async function carregarDadosDoBanco() {
-            let carregou = false;
-            const timeoutSeguranca = setTimeout(() => {
-                if (!carregou) {
-                    carregou = true;
-                    ministerios = listaMinisteriosPadrao;
-                    padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
-                    document.getElementById('loading-cloud').style.display = 'none';
-                    initSistema();
-                }
-            }, 4000);
-
             try {
                 const docRef = dbNovo.collection("dados_igreja").doc("principal");
                 const docSnap = await docRef.get();
 
-                if (!carregou) {
-                    carregou = true;
-                    clearTimeout(timeoutSeguranca);
-
-                    if (docSnap.exists) {
-                        const dados = docSnap.data();
-                        senhaAdmin = dados.senhaAdmin || 'admin123';
-                        anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
-                        ministerios = (dados.ministerios && dados.ministerios.length > 0) ? dados.ministerios : listaMinisteriosPadrao;
-                        eventos = dados.eventos || [];
-                        padroesFixosMinisterios = dados.padroesFixosMinisterios || [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
-                        escalas = dados.escalas || {};
-                    } else {
-                        ministerios = listaMinisteriosPadrao;
-                        padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
-                        escalas = {};
-                        await salvarTudoNoBanco();
-                    }
-                    document.getElementById('loading-cloud').style.display = 'none';
-                    initSistema();
-                }
-            } catch (error) {
-                if (!carregou) {
-                    carregou = true;
-                    clearTimeout(timeoutSeguranca);
+                if (docSnap.exists) {
+                    const dados = docSnap.data();
+                    senhaAdmin = dados.senhaAdmin || 'admin123';
+                    anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
+                    ministerios = (dados.ministerios && dados.ministerios.length > 0) ? dados.ministerios : listaMinisteriosPadrao;
+                    eventos = dados.eventos || [];
+                    padroesFixosMinisterios = dados.padroesFixosMinisterios || [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                    escalas = dados.escalas || {};
+                    usuariosSistema = dados.usuariosSistema || [];
+                } else {
                     ministerios = listaMinisteriosPadrao;
-                    document.getElementById('loading-cloud').style.display = 'none';
-                    initSistema();
+                    padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                    escalas = {};
+                    usuariosSistema = [];
                 }
+                await salvarTudoNoBanco();
+            } catch (error) {
+                console.error("Erro ao carregar do Firebase:", error);
+                ministerios = listaMinisteriosPadrao;
+            } finally {
+                document.getElementById('loading-cloud').style.display = 'none';
+                initSistema();
             }
         }
 
@@ -470,11 +507,58 @@
                     ministerios,
                     eventos,
                     padroesFixosMinisterios,
-                    escalas
-                }, { merge: true });
+                    escalas,
+                    usuariosSistema
+                });
             } catch (error) {
-                console.error("Erro ao salvar no banco:", error);
-                alert("Erro ao gravar alteração. Verifique se o banco permite escritas.");
+                console.error("Erro ao sincronizar com o Firebase:", error);
+            }
+        }
+
+        // Funções de Backup em Documento Separado (`backup_sistema`)
+        async function fazerBackupNoFirebase() {
+            try {
+                const dadosBackup = {
+                    senhaAdmin,
+                    anciaos,
+                    ministerios,
+                    eventos,
+                    padroesFixosMinisterios,
+                    escalas,
+                    usuariosSistema,
+                    dataBackupRealizado: new Date().toISOString()
+                };
+                await dbNovo.collection("dados_igreja").doc("backup_sistema").set(dadosBackup);
+                alert("Backup realizado com sucesso no documento separado 'backup_sistema' do Firebase!");
+            } catch (error) {
+                console.error("Erro ao fazer backup:", error);
+                alert("Erro ao realizar backup no Firebase.");
+            }
+        }
+
+        async function restaurarBackupDoFirebase() {
+            if (!confirm("Deseja substituir os dados atuais do sistema pelos dados salvos no backup do Firebase?")) return;
+            try {
+                const docSnap = await dbNovo.collection("dados_igreja").doc("backup_sistema").get();
+                if (docSnap.exists) {
+                    const dados = docSnap.data();
+                    senhaAdmin = dados.senhaAdmin || 'admin123';
+                    anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
+                    ministerios = dados.ministerios || listaMinisteriosPadrao;
+                    eventos = dados.eventos || [];
+                    padroesFixosMinisterios = dados.padroesFixosMinisterios || [];
+                    escalas = dados.escalas || {};
+                    usuariosSistema = dados.usuariosSistema || [];
+                    
+                    await salvarTudoNoBanco();
+                    initSistema();
+                    alert("Sistema restaurado com sucesso a partir do backup do Firebase!");
+                } else {
+                    alert("Nenhum documento de backup ('backup_sistema') foi encontrado.");
+                }
+            } catch (error) {
+                console.error("Erro ao restaurar backup:", error);
+                alert("Erro ao restaurar dados do backup.");
             }
         }
 
@@ -488,6 +572,7 @@
             renderAnciaos();
             renderEventos();
             renderPadroesMinisterios();
+            renderUsuariosSistema();
             atualizarSelects();
             verificarDadosData();
             renderResumoHoje();
@@ -499,8 +584,13 @@
             const select = document.getElementById('login-role-select');
             if (!select) return;
             let html = `<option value="ADMIN">Administrador Geral</option>`;
+            
+            // Adicionar ministérios padrão e usuários cadastrados
             ministerios.forEach(m => {
-                html += `<option value="${m.nome}">Ministério: ${m.nome}</option>`;
+                html += `<option value="MIN_${m.nome}">Ministério: ${m.nome}</option>`;
+            });
+            usuariosSistema.forEach(u => {
+                html += `<option value="USR_${u.nome}">Líder: ${u.nome} (${u.perfil})</option>`;
             });
             select.innerHTML = html;
         }
@@ -515,15 +605,26 @@
         }
 
         function fazerLoginSeguro() {
-            const perfil = document.getElementById('login-role-select').value;
+            const perfilValor = document.getElementById('login-role-select').value;
             const senhaDigitada = document.getElementById('login-password').value;
 
-            if (perfil === 'ADMIN') {
+            if (perfilValor === 'ADMIN') {
                 if (senhaDigitada !== senhaAdmin) { alert('Senha incorreta!'); return; }
+                usuarioLogadoPerfil = 'ADMIN';
+            } else if (perfilValor.startsWith('USR_')) {
+                const nomeUser = perfilValor.replace('USR_', '');
+                const usuarioEncontrado = usuariosSistema.find(u => u.nome === nomeUser);
+                if (!usuarioEncontrado || usuarioEncontrado.senha !== senhaDigitada) {
+                    alert('Senha incorreta para este usuário!');
+                    return;
+                }
+                usuarioLogadoPerfil = usuarioEncontrado.perfil;
+            } else {
+                // Ministério direto
+                usuarioLogadoPerfil = perfilValor.replace('MIN_', '');
             }
 
-            usuarioLogadoPerfil = perfil;
-            transicionarParaApp(`👤 Perfil: ${perfil}`);
+            transicionarParaApp(`👤 Perfil: ${usuarioLogadoPerfil}`);
         }
 
         function transicionarParaApp(textoBadge) {
@@ -797,25 +898,55 @@
             containers.forEach(cont => cont.innerHTML = htmlConteudo);
         }
 
-        async function salvarMinisterioContexto(e, formElement) {
+        // Funções para gerenciamento de Usuários do Sistema
+        async function salvarUsuarioSistema(e) {
             e.preventDefault();
-            const escopo = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
-            
-            const indexEditInput = escopo.querySelector('.min-edit-index');
-            const nomeInput = escopo.querySelector('.min-nome');
-            const liderInput = escopo.querySelector('.min-lider');
-            const equipeInput = escopo.querySelector('.min-equipe');
+            const nome = document.getElementById('user-cad-nome').value;
+            const perfil = document.getElementById('user-cad-perfil').value;
+            const senha = document.getElementById('user-cad-senha').value;
 
-            if (!indexEditInput || !nomeInput || !liderInput) {
-                alert('Erro ao localizar os campos do formulário.');
+            usuariosSistema.push({ nome, perfil, senha });
+            await salvarTudoNoBanco();
+            document.getElementById('form-cad-usuario').reset();
+            renderUsuariosSistema();
+            carregarOpcoesLogin();
+            alert("Usuário cadastrado com sucesso!");
+        }
+
+        async function excluirUsuarioSistema(index) {
+            if(confirm("Deseja realmente excluir este usuário?")) {
+                usuariosSistema.splice(index, 1);
+                await salvarTudoNoBanco();
+                renderUsuariosSistema();
+                carregarOpcoesLogin();
+            }
+        }
+
+        function renderUsuariosSistema() {
+            const tbody = document.getElementById('table-usuarios-sistema');
+            if(!tbody) return;
+            if(usuariosSistema.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum usuário cadastrado.</td></tr>`;
                 return;
             }
+            tbody.innerHTML = usuariosSistema.map((u, i) => `
+                <tr>
+                    <td><strong>${u.nome}</strong></td>
+                    <td><span class="tag tag-purple">${u.perfil}</span></td>
+                    <td><button class="action-btn-delete" onclick="excluirUsuarioSistema(${i})">X</button></td>
+                </tr>
+            `).join('');
+        }
 
-            const indexEdit = parseInt(indexEditInput.value);
+        async function salvarMinisterioContexto(e, formElement) {
+            e.preventDefault();
+            const container = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
+            
+            const indexEdit = parseInt(container.querySelector('.min-edit-index').value);
             const novoMinisterio = {
-                nome: nomeInput.value.trim(),
-                lider: liderInput.value.trim(),
-                equipe: equipeInput ? equipeInput.value.trim() : ''
+                nome: container.querySelector('.min-nome').value,
+                lider: container.querySelector('.min-lider').value,
+                equipe: container.querySelector('.min-equipe').value
             };
 
             if (indexEdit === -1) {
@@ -830,11 +961,6 @@
             renderMinisterios();
             atualizarSelects();
             carregarOpcoesLogin();
-
-            if (document.getElementById('fullscreen-modal').style.display === 'block' && moduloAtualAberto === 'ministerios') {
-                document.getElementById('modal-content-body').innerHTML = document.querySelector('#card-ministerios .module-content').innerHTML;
-                renderMinisterios();
-            }
 
             alert('Ministério salvo com sucesso!');
         }
@@ -892,8 +1018,7 @@
             escopo.querySelector('.min-edit-index').value = i;
             escopo.querySelector('.min-nome').value = m.nome;
             escopo.querySelector('.min-lider').value = m.lider;
-            const campoEquipe = escopo.querySelector('.min-equipe');
-            if(campoEquipe) campoEquipe.value = m.equipe || '';
+            escopo.querySelector('.min-equipe').value = m.equipe || '';
             
             const titulo = escopo.querySelector('.form-ministerio-titulo');
             if(titulo) {
@@ -955,7 +1080,7 @@
             const tbody = document.getElementById('table-eventos');
             if(!tbody) return;
             tbody.innerHTML = eventos.map((ev, i) => `
-                <tr><td><strong>${ev.nome}</strong></td><td>${ev.dataInicio}</td><td><button type="button" class="btn btn-danger" onclick="excluirEvento(${i})">X</button></td></tr>
+                <tr><td><strong>${ev.nome}</strong></td><td>${ev.dataInicio}</td><td><button class="btn btn-danger" onclick="excluirEvento(${i})">X</button></td></tr>
             `).join('');
         }
 
@@ -970,7 +1095,7 @@
             const ocorrenciaSel = document.getElementById('mindia-ocorrencia').value;
             const minSel = document.getElementById('mindia-ministerio').value;
 
-            padroesFixosMinisterios = padroesFixosMinisterios.filter(p => p.ocorrencia !== ocorrenciaSel);
+            padroesFixosMinisterios = padroesFixoxMinisterios = padroesFixosMinisterios.filter(p => p.ocorrencia !== ocorrenciaSel);
 
             padroesFixosMinisterios.push({
                 ocorrencia: ocorrenciaSel,
@@ -991,7 +1116,7 @@
                 return;
             }
             tbody.innerHTML = padroesFixosMinisterios.map((p, i) => `
-                <tr><td><span class="tag tag-purple">${p.ocorrencia}</span></td><td>${p.ministerio}</td><td><button type="button" class="btn btn-danger" onclick="excluirPadraoMinisterio(${i})">X</button></td></tr>
+                <tr><td><span class="tag tag-purple">${p.ocorrencia}</span></td><td>${p.ministerio}</td><td><button class="btn btn-danger" onclick="excluirPadraoMinisterio(${i})">X</button></td></tr>
             `).join('');
         }
 
