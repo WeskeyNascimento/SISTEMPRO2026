@@ -61,7 +61,7 @@
         .btn-danger { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
         .btn:hover { opacity: 0.9; transform: scale(0.98); }
 
-        .action-btn-edit { background-color: #f59e0b; color: white; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: 0.2s; margin-right: 4px; }
+        .action-btn-edit { background-color: #f59e0b; color: white; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; margin-right: 4px; }
         .action-btn-edit:hover { background-color: #d97706; }
         .action-btn-delete { background-color: rgba(239, 68, 68, 0.25); color: #fca5a5; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; transition: 0.2s; }
         .action-btn-delete:hover { background-color: rgba(239, 68, 68, 0.4); color: white; }
@@ -446,8 +446,8 @@
                         ministerios = listaMinisteriosPadrao;
                         padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
                         escalas = {};
+                        await salvarTudoNoBanco();
                     }
-                    await salvarTudoNoBanco();
                     document.getElementById('loading-cloud').style.display = 'none';
                     initSistema();
                 }
@@ -471,9 +471,10 @@
                     eventos,
                     padroesFixosMinisterios,
                     escalas
-                });
+                }, { merge: true });
             } catch (error) {
-                console.error("Erro ao salvar:", error);
+                console.error("Erro ao salvar no banco:", error);
+                alert("Erro ao gravar alteração. Verifique se o banco permite escritas.");
             }
         }
 
@@ -519,10 +520,6 @@
 
             if (perfil === 'ADMIN') {
                 if (senhaDigitada !== senhaAdmin) { alert('Senha incorreta!'); return; }
-            } else {
-                usuarioLogadoPerfil = perfil;
-                transicionarParaApp(`👤 Perfil: ${perfil}`);
-                return;
             }
 
             usuarioLogadoPerfil = perfil;
