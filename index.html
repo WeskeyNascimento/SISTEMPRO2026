@@ -415,7 +415,6 @@
         ];
 
         async function carregarDadosDoBanco() {
-            // Timeout de segurança: se o Firebase demorar mais de 4 segundos, abre o painel mesmo assim
             let carregou = false;
             const timeoutSeguranca = setTimeout(() => {
                 if (!carregou) {
@@ -805,13 +804,24 @@
 
         async function salvarMinisterioContexto(e, formElement) {
             e.preventDefault();
-            const container = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
             
-            const indexEdit = parseInt(container.querySelector('.min-edit-index').value);
+            const escopo = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
+            
+            const indexEditInput = escopo.querySelector('.min-edit-index');
+            const nomeInput = escopo.querySelector('.min-nome');
+            const liderInput = escopo.querySelector('.min-lider');
+            const equipeInput = escopo.querySelector('.min-equipe');
+
+            if (!indexEditInput || !nomeInput || !liderInput) {
+                alert('Erro ao localizar os campos do formulário.');
+                return;
+            }
+
+            const indexEdit = parseInt(indexEditInput.value);
             const novoMinisterio = {
-                nome: container.querySelector('.min-nome').value,
-                lider: container.querySelector('.min-lider').value,
-                equipe: container.querySelector('.min-equipe').value
+                nome: nomeInput.value.trim(),
+                lider: liderInput.value.trim(),
+                equipe: equipeInput ? equipeInput.value.trim() : ''
             };
 
             if (indexEdit === -1) {
@@ -826,6 +836,11 @@
             renderMinisterios();
             atualizarSelects();
             carregarOpcoesLogin();
+
+            if (document.getElementById('fullscreen-modal').style.display === 'block' && moduloAtualAberto === 'ministerios') {
+                document.getElementById('modal-content-body').innerHTML = document.querySelector('#card-ministerios .module-content').innerHTML;
+                renderMinisterios();
+            }
 
             alert('Ministério salvo com sucesso!');
         }
@@ -883,7 +898,8 @@
             escopo.querySelector('.min-edit-index').value = i;
             escopo.querySelector('.min-nome').value = m.nome;
             escopo.querySelector('.min-lider').value = m.lider;
-            escopo.querySelector('.min-equipe').value = m.equipe || '';
+            const campoEquipe = escopo.querySelector('.min-equipe');
+            if(campoEquipe) campoEquipe.value = m.equipe || '';
             
             const titulo = escopo.querySelector('.form-ministerio-titulo');
             if(titulo) {
