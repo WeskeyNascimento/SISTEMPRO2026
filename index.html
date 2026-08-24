@@ -350,7 +350,6 @@
                     <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
                 </div>
                 <div class="module-content">
-                    <!-- Sub-card Cadastro de Usuários / Líderes -->
                     <div class="sub-card">
                         <div class="sub-title">➕ Cadastrar Líder / Usuário com Senha</div>
                         <form id="form-cad-usuario" onsubmit="salvarUsuarioSistema(event)">
@@ -386,7 +385,6 @@
                         </table>
                     </div>
 
-                    <!-- Sub-card Backup em Documento Separado -->
                     <div class="sub-card" style="border-color: rgba(56, 189, 248, 0.3);">
                         <div class="sub-title" style="color: #38bdf8;">☁️ Backup em Documento Separado (Firebase)</div>
                         <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">
@@ -442,7 +440,7 @@
         let eventos = [];
         let padroesFixosMinisterios = [];
         let escalas = {};
-        let usuariosSistema = []; // Novo array para usuários e líderes cadastrados
+        let usuariosSistema = [];
         
         let usuarioLogadoPerfil = 'VISITANTE';
         let moduloAtualAberto = '';
@@ -488,13 +486,15 @@
                     padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
                     escalas = {};
                     usuariosSistema = [];
+                    await salvarTudoNoBanco();
                 }
-                await salvarTudoNoBanco();
             } catch (error) {
                 console.error("Erro ao carregar do Firebase:", error);
                 ministerios = listaMinisteriosPadrao;
+                alert("Erro ao conectar com o banco de dados. Verifique sua conexão.");
             } finally {
-                document.getElementById('loading-cloud').style.display = 'none';
+                const cloudLoad = document.getElementById('loading-cloud');
+                if(cloudLoad) cloudLoad.style.display = 'none';
                 initSistema();
             }
         }
@@ -510,12 +510,13 @@
                     escalas,
                     usuariosSistema
                 });
+                console.log("Dados salvos com sucesso no Firebase.");
             } catch (error) {
-                console.error("Erro ao sincronizar com o Firebase:", error);
+                console.error("Erro detalhado ao sincronizar com o Firebase:", error);
+                alert("Erro ao salvar dados no Firebase. Veja o console para detalhes.");
             }
         }
 
-        // Funções de Backup em Documento Separado (`backup_sistema`)
         async function fazerBackupNoFirebase() {
             try {
                 const dadosBackup = {
@@ -529,7 +530,7 @@
                     dataBackupRealizado: new Date().toISOString()
                 };
                 await dbNovo.collection("dados_igreja").doc("backup_sistema").set(dadosBackup);
-                alert("Backup realizado com sucesso no documento separado 'backup_sistema' do Firebase!");
+                alert("Backup realizado com sucesso no documento 'backup_sistema' do Firebase!");
             } catch (error) {
                 console.error("Erro ao fazer backup:", error);
                 alert("Erro ao realizar backup no Firebase.");
@@ -585,7 +586,6 @@
             if (!select) return;
             let html = `<option value="ADMIN">Administrador Geral</option>`;
             
-            // Adicionar ministérios padrão e usuários cadastrados
             ministerios.forEach(m => {
                 html += `<option value="MIN_${m.nome}">Ministério: ${m.nome}</option>`;
             });
@@ -620,7 +620,6 @@
                 }
                 usuarioLogadoPerfil = usuarioEncontrado.perfil;
             } else {
-                // Ministério direto
                 usuarioLogadoPerfil = perfilValor.replace('MIN_', '');
             }
 
@@ -898,7 +897,6 @@
             containers.forEach(cont => cont.innerHTML = htmlConteudo);
         }
 
-        // Funções para gerenciamento de Usuários do Sistema
         async function salvarUsuarioSistema(e) {
             e.preventDefault();
             const nome = document.getElementById('user-cad-nome').value;
@@ -1074,6 +1072,7 @@
             await salvarTudoNoBanco();
             document.getElementById('form-evento').reset();
             renderEventos();
+            alert('Evento agendado com sucesso!');
         }
 
         function renderEventos() {
@@ -1095,7 +1094,7 @@
             const ocorrenciaSel = document.getElementById('mindia-ocorrencia').value;
             const minSel = document.getElementById('mindia-ministerio').value;
 
-            padroesFixosMinisterios = padroesFixoxMinisterios = padroesFixosMinisterios.filter(p => p.ocorrencia !== ocorrenciaSel);
+            padroesFixosMinisterios = padroesFixosMinisterios.filter(p => p.ocorrencia !== ocorrenciaSel);
 
             padroesFixosMinisterios.push({
                 ocorrencia: ocorrenciaSel,
