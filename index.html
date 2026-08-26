@@ -52,7 +52,7 @@
         .form-control:focus { border-color: #38bdf8; }
         .form-control:disabled { background-color: #1a2234; color: #64748b; border-color: #1e293b; cursor: not-allowed; }
 
-        textarea.form-control { resize: vertical; min-height: 180px; font-family: monospace; line-height: 1.4; }
+        textarea.form-control { resize: vertical; min-height: 140px; font-family: monospace; line-height: 1.4; }
 
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
         th, td { text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -83,6 +83,21 @@
         .resumo-item .resumo-badge { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
 
         .cronograma-pre { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 15px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: #e2e8f0; white-space: pre-wrap; line-height: 1.5; }
+
+        /* ESTILOS DO EDITOR DINÂMICO DE CRONOGRAMA */
+        .editor-cronograma-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; margin-bottom: 12px; }
+        .cronograma-row { display: flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; cursor: grab; }
+        .cronograma-row.dragging { opacity: 0.5; border: 1px dashed #38bdf8; }
+        .cronograma-row .handle { cursor: grab; color: #64748b; font-size: 1.1rem; padding: 0 4px; user-select: none; }
+        .cronograma-row input[type="color"] { width: 34px; height: 34px; border: none; background: transparent; cursor: pointer; border-radius: 4px; }
+        .cronograma-row input[type="text"] { background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 0.8rem; }
+        .cronograma-row .input-hora { width: 120px; text-align: center; }
+        .cronograma-row .input-titulo { flex: 2; font-weight: 600; }
+        .cronograma-row .input-detalhe { flex: 2; color: #94a3b8; }
+        
+        .cronograma-preview-card { background: #0f172a; border-radius: 10px; padding: 15px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 6px; }
+        .preview-row-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 6px; color: #000; font-weight: 700; font-size: 0.85rem; }
+        .preview-row-item .p-horario { font-size: 0.75rem; opacity: 0.85; }
 
         .escala-mes-header-info { text-align: center; margin-bottom: 20px; }
         .escala-mes-header-info h2 { font-size: 1.3rem; color: #38bdf8; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; }
@@ -172,7 +187,7 @@
                 </div>
             </div>
 
-            <!-- CARD 2: ORGANIZAÇÃO DO CULTO (CRONOGRAMA) -->
+            <!-- CARD 2: ORGANIZAÇÃO DO CULTO (EDITOR DE CRONOGRAMA INTEGRADO) -->
             <div class="module-card active" id="card-culto">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">📖 Organização do Culto do Dia</div>
@@ -183,22 +198,31 @@
                 </div>
                 <div class="module-content">
                     <div class="sub-card">
-                        <div class="sub-title">⚙️ Cronograma do Culto</div>
+                        <div class="sub-title">⚙️ Cronograma Dinâmico do Culto</div>
                         <form id="form-cronograma-culto" onsubmit="salvarCronogramaCulto(event)">
                             <div class="form-group">
-                                <label>Selecione um Modelo Padrão</label>
+                                <label>Modelo Pré-Definido</label>
                                 <select id="culto-modelo-preset" class="form-control field-perm" onchange="carregarPresetCronograma(this.value)">
-                                    <option value="">-- Escolher Modelo Próprio da Igreja --</option>
-                                    <option value="SABADO">Culto de Sábado (Escola Sabatina + Divine)</option>
+                                    <option value="">-- Escolher Modelo Padrão --</option>
+                                    <option value="SABADO">Culto de Sábado (Estrela Dalva completo)</option>
                                     <option value="DOMINGO">Culto de Domingo</option>
                                     <option value="QUARTA">Culto de Quarta-feira</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label>Editar Ordem do Culto (Texto Livre)</label>
-                                <textarea id="culto-cronograma-texto" class="form-control field-perm" placeholder="Selecione um modelo acima ou digite livremente a ordem do culto aqui..."></textarea>
+
+                            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                                <label style="margin:0;">Itens da Programação (Arraste para Reordenar)</label>
+                                <button type="button" class="btn btn-primary field-perm" style="padding: 3px 8px; font-size: 0.7rem;" onclick="adicionarLinhaCronograma()">+ Item</button>
                             </div>
-                            <button type="submit" class="btn btn-success field-perm" style="width: 100%;">💾 Salvar Cronograma para a Data Selecionada</button>
+
+                            <div class="editor-cronograma-container" id="editor-cronograma-lista"></div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label>Observações / Texto Livre Adicional</label>
+                                <textarea id="culto-cronograma-texto" class="form-control field-perm" placeholder="Observações extras ou anotações livres..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-success field-perm" style="width: 100%;">💾 Salvar Cronograma no Firebase</button>
                         </form>
                     </div>
                 </div>
@@ -462,76 +486,32 @@
         let moduloAtualAberto = '';
         let abaResumoAtual = 'dia';
 
-        const presetsCronograma = {
-            SABADO: `LOUVOR ANTES DA ESCOLA SABATINA (08:45 AS 09:00)
-- 1º Louvor
-- 2º Louvor
-
-INÍCIO DA ESCOLA SABATINA (09:00 AS 10:20)
-- Oração
-- Introdução
-- Hino Inicial (Congregacional)
-- Carta Missionária
-- Música Especial
-- Recapitulacão da Lição
-- Música Especial
-- Oração Final e Agradecimentos
-- Chamada das Crianças
-
-DOXOLOGIA (10:20 AS 10:23)
-- Hino Doxologia
-- Oração do Pregador
-- Anúncios (Comunicação)
-
-OFERTÓRIO (10:23 AS 10:30)
-- Vídeo Provai e Vede
-- Hino do Ofertório
-
-LOUVOR COM A IGREJA (10:30 AS 10:45)
-- 1ª Música
-- 2ª Música
-- 3ª Música (De pé)
-
-ORAÇÃO DE JOELHOS (10:46 AS 10:50)
-HISTORINHA DAS CRIANÇAS (10:51 AS 10:58)
-
-MENSAGEM BÍBLICA E MÚSICA ESPECIAL (10:59 AS 11:45)
-- Música Especial
-- Sermão
-- Música Especial`,
-
-            DOMINGO: `ORAÇÃO
-INTRODUÇÃO
-
-LOUVOR COM A IGREJA
-- 1ª Música
-- 2ª Música
-- 3ª Música (De pé)
-
-OFERTÓRIO
-ORAÇÃO DE JOELHOS
-
-MENSAGEM BÍBLICA E MÚSICA ESPECIAL
-- Música Especial
-- Sermão
-- Música Especial`,
-
-            QUARTA: `ORAÇÃO
-INTRODUÇÃO
-
-LOUVOR COM A IGREJA
-- 1ª Música
-- 2ª Música
-- 3ª Música (De pé)
-
-ORAÇÃO DE JOELHOS
-PEDIDOS E AGRADECIMENTO
-ORAÇÃO DE JOELHOS
-
-MENSAGEM BÍBLICA E MÚSICA ESPECIAL
-- Música Especial
-- Sermão
-- Música Especial`
+        // PRESETS ESTRUTURADOS DE CRONOGRAMA COM CORES E HORÁRIOS
+        const presetsCronogramaEspecial = {
+            SABADO: [
+                { title: "LOUVOR", time: "08:45 AS 09:00", color: "#fef3c7", detail: "1º e 2º Louvor" },
+                { title: "ESCOLA SABATINA", time: "09:00 AS 10:20", color: "#f97316", detail: "Abertura e Recapitulacão" },
+                { title: "DOXOLOGIA", time: "10:20 AS 10:23", color: "#3b82f6", detail: "Oração do Pregador" },
+                { title: "COMUNICAÇÃO (ANÚNCIOS)", time: "", color: "#ffffff", detail: "" },
+                { title: "OFERTÓRIO", time: "10:23 AS 10:30", color: "#eab308", detail: "Vídeo Provai e Vede" },
+                { title: "LOUVOR COM A IGREJA", time: "10:30 AS 10:45", color: "#22c55e", detail: "3 Músicas Congregacionais" },
+                { title: "ORAÇÃO DE JOELHOS", time: "10:45 AS 10:50", color: "#cbd5e1", detail: "" },
+                { title: "HISTORINHA DAS CRIANÇAS", time: "10:50 AS 10:57", color: "#ec4899", detail: "Momento Infantil" },
+                { title: "MENSAGEM BÍBLICA + ESPECIAL", time: "10:57 AS 11:45", color: "#2563eb", detail: "Sermão e Música" }
+            ],
+            DOMINGO: [
+                { title: "ORAÇÃO INICIAL", time: "19:00 AS 19:05", color: "#ffffff", detail: "" },
+                { title: "LOUVOR CONGREGACIONAL", time: "19:05 AS 19:20", color: "#22c55e", detail: "" },
+                { title: "OFERTÓRIO", time: "19:20 AS 19:30", color: "#eab308", detail: "" },
+                { title: "ORAÇÃO DE JOELHOS", time: "19:30 AS 19:35", color: "#cbd5e1", detail: "" },
+                { title: "SERMÃO E MÚSICA", time: "19:35 AS 20:15", color: "#3b82f6", detail: "Mensagem Bíblica" }
+            ],
+            QUARTA: [
+                { title: "ORAÇÃO E INTRODUÇÃO", time: "19:30 AS 19:35", color: "#ffffff", detail: "" },
+                { title: "GRUPO DE LOUVOR", time: "19:35 AS 19:50", color: "#22c55e", detail: "" },
+                { title: "PEDIDOS E AGRADECIMENTOS", time: "19:50 AS 20:00", color: "#ec4899", detail: "Oração Intercessora" },
+                { title: "ESTUDO BÍBLICO", time: "20:00 AS 20:30", color: "#3b82f6", detail: "Sermão de Quarta" }
+            ]
         };
 
         const listaMinisteriosPadrao = [
@@ -782,15 +762,39 @@ MENSAGEM BÍBLICA E MÚSICA ESPECIAL
                 abasDiv.style.display = 'none';
                 document.getElementById('modal-titulo-view').innerText = "📖 Organização do Culto (Visualização)";
                 const dataSel = document.getElementById('escala-data').value;
-                const cronogramaTexto = cronogramasCulto[dataSel] || "Nenhum cronograma definido para esta data.";
-                
-                document.getElementById('modal-content-body').innerHTML = `
+                const cData = cronogramasCulto[dataSel];
+
+                let htmlContent = `
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <h2 style="color: #38bdf8; font-size: 1.3rem; font-weight: 800;">CRONOGRAMA DO CULTO</h2>
-                        <p style="color: #94a3b8; font-size: 0.85rem;">Data: ${dataSel}</p>
+                        <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800;">CRONOGRAMA DE CULTO</h2>
+                        <p style="color: #94a3b8; font-size: 0.85rem;">Data da Programação: ${dataSel}</p>
                     </div>
-                    <div class="cronograma-pre">${cronogramaTexto}</div>
                 `;
+
+                if (cData && typeof cData === 'object' && cData.items && cData.items.length > 0) {
+                    htmlContent += `<div class="cronograma-preview-card">`;
+                    cData.items.forEach(it => {
+                        const bg = it.color || '#ffffff';
+                        htmlContent += `
+                            <div class="preview-row-item" style="background-color: ${bg};">
+                                <div>
+                                    <div>${it.title || ''}</div>
+                                    ${it.detail ? `<div style="font-size:0.75rem; font-weight:normal; opacity:0.8;">${it.detail}</div>` : ''}
+                                </div>
+                                <div class="p-horario">${it.time || ''}</div>
+                            </div>
+                        `;
+                    });
+                    htmlContent += `</div>`;
+                    if (cData.textoExtra) {
+                        htmlContent += `<div class="sub-card" style="margin-top:15px;"><div class="sub-title">Observações</div><div style="font-size:0.85rem; color:#e2e8f0;">${cData.textoExtra}</div></div>`;
+                    }
+                } else {
+                    const textoLivre = (typeof cData === 'string') ? cData : "Nenhum cronograma definido para esta data.";
+                    htmlContent += `<div class="cronograma-pre">${textoLivre}</div>`;
+                }
+
+                document.getElementById('modal-content-body').innerHTML = htmlContent;
             } else {
                 abasDiv.style.display = 'none';
                 const originalCardContent = document.querySelector(`#card-${modulo} .module-content`).innerHTML;
@@ -903,10 +907,74 @@ MENSAGEM BÍBLICA E MÚSICA ESPECIAL
             });
         }
 
+        // LÓGICA DO EDITOR DE CRONOGRAMA DINÂMICO
+        function criarElementoLinhaCronograma(title = '', time = '', detail = '', color = '#ffffff') {
+            const div = document.createElement('div');
+            div.className = 'cronograma-row';
+            div.draggable = true;
+            div.innerHTML = `
+                <span class="handle">☰</span>
+                <input type="color" value="${color}">
+                <input type="text" class="input-hora" placeholder="Ex: 09:00 AS 10:00" value="${time}">
+                <input type="text" class="input-titulo" placeholder="Parte do Culto" value="${title}">
+                <input type="text" class="input-detalhe" placeholder="Detalhes / Responsável" value="${detail}">
+                <button type="button" class="btn btn-danger" style="padding: 4px 8px;" onclick="this.parentElement.remove()">✕</button>
+            `;
+            return div;
+        }
+
+        function adicionarLinhaCronograma(title = '', time = '', detail = '', color = '#ffffff') {
+            const container = document.getElementById('editor-cronograma-lista');
+            container.appendChild(criarElementoLinhaCronograma(title, time, detail, color));
+            habilitarDragAndDropCronograma();
+        }
+
         function carregarPresetCronograma(chave) {
-            if (chave && presetsCronograma[chave]) {
-                document.getElementById('culto-cronograma-texto').value = presetsCronograma[chave];
+            if (chave && presetsCronogramaEspecial[chave]) {
+                const container = document.getElementById('editor-cronograma-lista');
+                container.innerHTML = '';
+                presetsCronogramaEspecial[chave].forEach(item => {
+                    adicionarLinhaCronograma(item.title, item.time, item.detail, item.color);
+                });
             }
+        }
+
+        function habilitarDragAndDropCronograma() {
+            const container = document.getElementById('editor-cronograma-lista');
+            let itemArrastado = null;
+
+            container.querySelectorAll('.cronograma-row').forEach(row => {
+                row.addEventListener('dragstart', () => {
+                    itemArrastado = row;
+                    row.classList.add('dragging');
+                });
+                row.addEventListener('dragend', () => {
+                    row.classList.remove('dragging');
+                });
+            });
+
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                const proximoElemento = getElementoAposArrasto(container, e.clientY);
+                if (proximoElemento == null) {
+                    container.appendChild(itemArrastado);
+                } else {
+                    container.insertBefore(itemArrastado, proximoElemento);
+                }
+            });
+        }
+
+        function getElementoAposArrasto(container, y) {
+            const elementos = [...container.querySelectorAll('.cronograma-row:not(.dragging)')];
+            return elementos.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
         async function salvarCronogramaCulto(e) {
@@ -914,8 +982,24 @@ MENSAGEM BÍBLICA E MÚSICA ESPECIAL
             const dataSel = document.getElementById('escala-data').value;
             if(!dataSel) { alert('Selecione uma data na Escala!'); return; }
 
-            const textoCronograma = document.getElementById('culto-cronograma-texto').value;
-            cronogramasCulto[dataSel] = textoCronograma;
+            const rows = document.querySelectorAll('#editor-cronograma-lista .cronograma-row');
+            const items = [];
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                items.push({
+                    color: inputs[0].value,
+                    time: inputs[1].value,
+                    title: inputs[2].value,
+                    detail: inputs[3].value
+                });
+            });
+
+            const textoExtra = document.getElementById('culto-cronograma-texto').value;
+
+            cronogramasCulto[dataSel] = {
+                items,
+                textoExtra
+            };
 
             await salvarTudoNoBanco();
             alert('Cronograma do culto salvo com sucesso para a data selecionada!');
@@ -955,8 +1039,20 @@ MENSAGEM BÍBLICA E MÚSICA ESPECIAL
             document.getElementById('esc-sonoplastia').value = esc.sonoplastia || '';
             document.getElementById('esc-recepcao').value = esc.recepcao || '';
 
-            const cronoTexto = cronogramasCulto[dataSel] || '';
-            document.getElementById('culto-cronograma-texto').value = cronoTexto;
+            const container = document.getElementById('editor-cronograma-lista');
+            container.innerHTML = '';
+            
+            const cData = cronogramasCulto[dataSel];
+            if (cData && typeof cData === 'object' && cData.items) {
+                cData.items.forEach(it => {
+                    adicionarLinhaCronograma(it.title, it.time, it.detail, it.color);
+                });
+                document.getElementById('culto-cronograma-texto').value = cData.textoExtra || '';
+            } else if (typeof cData === 'string') {
+                document.getElementById('culto-cronograma-texto').value = cData;
+            } else {
+                document.getElementById('culto-cronograma-texto').value = '';
+            }
             document.getElementById('culto-modelo-preset').value = '';
 
             const ocorrenciaCalculada = calcularOcorrenciaDaData(dataSel);
