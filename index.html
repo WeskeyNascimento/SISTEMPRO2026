@@ -907,26 +907,35 @@
             });
         }
 
-        // LÓGICA DO EDITOR DE CRONOGRAMA DINÂMICO
+        // LÓGICA DO EDITOR DE CRONOGRAMA DINÂMICO COM INPUTS E REMOÇÃO
         function criarElementoLinhaCronograma(title = '', time = '', detail = '', color = '#ffffff') {
             const div = document.createElement('div');
             div.className = 'cronograma-row';
             div.draggable = true;
             div.innerHTML = `
-                <span class="handle">☰</span>
-                <input type="color" value="${color}">
-                <input type="text" class="input-hora" placeholder="Ex: 09:00 AS 10:00" value="${time}">
-                <input type="text" class="input-titulo" placeholder="Parte do Culto" value="${title}">
-                <input type="text" class="input-detalhe" placeholder="Detalhes / Responsável" value="${detail}">
-                <button type="button" class="btn btn-danger" style="padding: 4px 8px;" onclick="this.parentElement.remove()">✕</button>
+                <span class="handle" title="Arrastar para Reordenar">☰</span>
+                <input type="color" value="${color}" title="Selecione a Cor">
+                <input type="text" class="input-hora field-perm" placeholder="Ex: 09:00 AS 10:00" value="${time}">
+                <input type="text" class="input-titulo field-perm" placeholder="Parte do Culto" value="${title}">
+                <input type="text" class="input-detalhe field-perm" placeholder="Detalhes / Responsável" value="${detail}">
+                <button type="button" class="action-btn-delete field-perm" title="Apagar Item" onclick="removerLinhaCronograma(this)">✕</button>
             `;
             return div;
         }
 
         function adicionarLinhaCronograma(title = '', time = '', detail = '', color = '#ffffff') {
             const container = document.getElementById('editor-cronograma-lista');
-            container.appendChild(criarElementoLinhaCronograma(title, time, detail, color));
+            const elementoLinha = criarElementoLinhaCronograma(title, time, detail, color);
+            container.appendChild(elementoLinha);
             habilitarDragAndDropCronograma();
+            aplicarPermissoesPerfil();
+        }
+
+        function removerLinhaCronograma(btnElement) {
+            const linha = btnElement.closest('.cronograma-row');
+            if (linha) {
+                linha.remove();
+            }
         }
 
         function carregarPresetCronograma(chave) {
