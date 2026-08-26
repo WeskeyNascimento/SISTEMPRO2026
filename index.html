@@ -24,7 +24,9 @@
         .navbar { display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .nav-brand { font-size: 1.3rem; font-weight: 800; letter-spacing: 0.5px; }
         .nav-brand span { color: #38bdf8; }
-        .user-badge { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; background: rgba(15, 23, 42, 0.5); padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .user-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: 0.85rem; background: rgba(15, 23, 42, 0.5); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .user-badge .user-title { font-weight: 700; color: #38bdf8; }
+        .user-badge .user-details { font-size: 0.75rem; color: #94a3b8; }
 
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
         .module-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
@@ -144,7 +146,9 @@
         <div class="navbar">
             <div class="nav-brand">PAINEL DE CONTROLE <span>PRO</span></div>
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="user-badge" id="current-user-display">👤 Perfil: Administrador</div>
+                <div class="user-badge" id="current-user-display">
+                    <span class="user-title">👤 Perfil: Administrador</span>
+                </div>
                 <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.75rem;" onclick="sairDoSistema()">🚪 Sair / Trocar Perfil</button>
             </div>
         </div>
@@ -360,11 +364,7 @@
                             <div class="form-group">
                                 <label>Perfil / Ministério Associado</label>
                                 <select id="user-cad-perfil" class="form-control" required>
-                                    <option value="Líder de Ministério">Líder de Ministério (Geral)</option>
-                                    <option value="Música">Música</option>
-                                    <option value="Diaconato">Diaconato</option>
-                                    <option value="Jovens (JA)">Jovens (JA)</option>
-                                    <option value="Desbravadores">Desbravadores</option>
+                                    <!-- Populado Dinamicamente -->
                                 </select>
                             </div>
                             <div class="form-group">
@@ -601,12 +601,14 @@
 
         function entrarComoVisitante() {
             usuarioLogadoPerfil = 'VISITANTE';
-            transicionarParaApp("👤 Perfil: Visitante");
+            transicionarParaApp("👤 Perfil: Visitante", "");
         }
 
         function fazerLoginSeguro() {
             const perfilValor = document.getElementById('login-role-select').value;
             const senhaDigitada = document.getElementById('login-password').value;
+
+            let detalheTopo = "";
 
             if (perfilValor === 'ADMIN') {
                 if (senhaDigitada !== senhaAdmin) { alert('Senha incorreta!'); return; }
@@ -619,17 +621,35 @@
                     return;
                 }
                 usuarioLogadoPerfil = usuarioEncontrado.perfil;
+                
+                // Procurar detalhes do ministério vinculado se houver
+                const minVinculado = ministerios.find(m => m.nome === usuarioEncontrado.perfil);
+                if(minVinculado) {
+                    detalheTopo = `👑 Líder: ${minVinculado.lider || usuarioEncontrado.nome} | 👥 Equipe: ${minVinculado.equipe || 'Não informada'}`;
+                }
             } else {
-                usuarioLogadoPerfil = perfilValor.replace('MIN_', '');
+                const nomeMin = perfilValor.replace('MIN_', '');
+                usuarioLogadoPerfil = nomeMin;
+                const minVinculado = ministerios.find(m => m.nome === nomeMin);
+                if(minVinculado) {
+                    detalheTopo = `👑 Líder: ${minVinculado.lider || 'Não informado'} | 👥 Equipe: ${minVinculado.equipe || 'Não informada'}`;
+                }
             }
 
-            transicionarParaApp(`👤 Perfil: ${usuarioLogadoPerfil}`);
+            transicionarParaApp(`👤 Perfil: ${usuarioLogadoPerfil}`, detalheTopo);
         }
 
-        function transicionarParaApp(textoBadge) {
+        function transicionarParaApp(textoBadge, detalheTopo) {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-screen').style.display = 'block';
-            document.getElementById('current-user-display').innerText = textoBadge;
+            
+            const badgeEl = document.getElementById('current-user-display');
+            let htmlBadge = `<span class="user-title">${textoBadge}</span>`;
+            if (detalheTopo) {
+                htmlBadge += `<span class="user-details">${detalheTopo}</span>`;
+            }
+            badgeEl.innerHTML = htmlBadge;
+
             aplicarPermissoesPerfil();
             verificarDadosData();
         }
@@ -1129,6 +1149,7 @@
         function atualizarSelects() {
             const selectMinDia = document.getElementById('mindia-ministerio');
             const selectMinEscala = document.getElementById('esc-ministerio-select');
+            const selectUserPerfil = document.getElementById('user-cad-perfil');
 
             const options = ministerios.length === 0 
                 ? `<option value="">Nenhum ministério cadastrado</option>`
@@ -1136,6 +1157,10 @@
 
             if(selectMinDia) selectMinDia.innerHTML = options;
             if(selectMinEscala) selectMinEscala.innerHTML = `<option value="">-- Selecionar Ministério Cadastrado --</option>` + options;
+            
+            if(selectUserPerfil) {
+                selectUserPerfil.innerHTML = `<option value="Líder de Ministério (Geral)">Líder de Ministério (Geral)</option>` + options;
+            }
         }
 
         carregarDadosDoBanco();
