@@ -52,6 +52,10 @@
 
         textarea.form-control { resize: vertical; min-height: 60px; font-family: inherit; line-height: 1.4; }
 
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 120px; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; }
+        .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #cbd5e1; cursor: pointer; }
+        .checkbox-item input[type="checkbox"] { accent-color: #38bdf8; cursor: pointer; }
+
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
         th, td { text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         th { color: #64748b; text-transform: uppercase; font-size: 0.7rem; }
@@ -68,6 +72,7 @@
 
         .tag { padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; display: inline-block; margin: 2px; }
         .tag-purple { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; }
+        .tag-blue { background-color: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
 
         .ministerio-fixo-card { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 10px; padding: 10px 14px; margin-top: -4px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: #e2e8f0; }
         .ministerio-fixo-card span { color: #c084fc; font-weight: 700; }
@@ -270,7 +275,7 @@
                 </div>
             </div>
 
-            <!-- CARD 4: ANCIÃO DO MÊS (NOVO - EXCLUSIVO ADMIN) -->
+            <!-- CARD 4: ANCIÃO DO MÊS (ATUALIZADO COM SELEÇÃO DE MINISTÉRIOS) -->
             <div class="module-card admin-only active" id="card-anciaoMes">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">👔 Ancião do Mês</div>
@@ -305,16 +310,25 @@
                                 <label>Nome do Ancião</label>
                                 <input type="text" id="anciao-nome-input" class="form-control" required placeholder="Ex: Marcilio ou Pr. João">
                             </div>
+
+                            <!-- NOVO CAMPO: SELEÇÃO DE MINISTÉRIOS DE APOIO -->
+                            <div class="form-group">
+                                <label>Ministérios Apoiados por este Ancião</label>
+                                <div class="checkbox-group" id="anciao-ministerios-checkboxes">
+                                    <!-- Preenchido via JS -->
+                                </div>
+                            </div>
+
                             <div style="display: flex; gap: 8px;">
                                 <button type="submit" id="btn-salvar-anciao" class="btn btn-success" style="flex: 2;">Salvar Ancião do Mês</button>
                                 <button type="button" id="btn-cancelar-anciao" class="btn btn-danger" style="flex: 1; display: none;" onclick="cancelarEdicaoAnciao()">Cancelar</button>
                             </div>
                         </form>
                     </div>
-                    <div class="sub-card" style="max-height:250px; overflow-y:auto;">
+                    <div class="sub-card" style="max-height:280px; overflow-y:auto;">
                         <div class="sub-title">Escala de Anciãos Definida</div>
                         <table>
-                            <thead><tr><th>Mês</th><th>Ancião</th><th>Ações</th></tr></thead>
+                            <thead><tr><th>Mês</th><th>Ancião & Apoio</th><th>Ações</th></tr></thead>
                             <tbody id="table-anciao-mes"></tbody>
                         </table>
                     </div>
@@ -521,7 +535,7 @@
         const dbNovo = firebase.firestore(appNovo);
 
         let senhaAdmin = 'admin123';
-        let anciaos = []; // Estrutura: [{ mes: 'Janeiro', nome: 'Marcilio' }]
+        let anciaos = []; // Estrutura: [{ mes: 'Janeiro', nome: 'Marcilio', ministeriosApoio: ['Música', 'Jovens'] }]
         let ministerios = [];
         let eventos = [];
         let padroesFixosMinisterios = [];
@@ -698,6 +712,7 @@
             renderEventos();
             renderPadroesMinisterios();
             renderUsuariosSistema();
+            renderCheckboxesAnciaoMinisterios();
             renderAnciaoMes();
             atualizarSelects();
             verificarDadosData();
@@ -780,22 +795,50 @@
             card.classList.toggle('active');
         }
 
-        // --- MÓDULO ANCIÃO DO MÊS ---
+        // --- MÓDULO ANCIÃO DO MÊS (ATUALIZADO PARA SUPORTAR MINISTÉRIOS DE APOIO) ---
+        function renderCheckboxesAnciaoMinisterios(selecionados = []) {
+            const container = document.getElementById('anciao-ministerios-checkboxes');
+            if(!container) return;
+            
+            if(ministerios.length === 0) {
+                container.innerHTML = `<span style="font-size:0.75rem; color:#94a3b8;">Nenhum ministério disponível.</span>`;
+                return;
+            }
+
+            container.innerHTML = ministerios.map(m => {
+                const isChecked = selecionados.includes(m.nome) ? 'checked' : '';
+                return `
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="${m.nome}" ${isChecked} class="chk-anciao-min">
+                        <span>${m.nome}</span>
+                    </label>
+                `;
+            }).join('');
+        }
+
         async function salvarAnciaoMes(e) {
             e.preventDefault();
             const mes = document.getElementById('anciao-mes-select').value;
             const nome = document.getElementById('anciao-nome-input').value.trim();
             const editIndex = parseInt(document.getElementById('anciao-edit-index').value);
 
+            // Coleta os ministérios selecionados
+            const ministeriosApoio = [];
+            document.querySelectorAll('.chk-anciao-min:checked').forEach(chk => {
+                ministeriosApoio.push(chk.value);
+            });
+
+            const objAnciao = { mes, nome, ministeriosApoio };
+
             if (editIndex === -1) {
                 const indexExiste = anciaos.findIndex(a => a.mes === mes);
                 if (indexExiste !== -1) {
-                    anciaos[indexExiste].nome = nome;
+                    anciaos[indexExiste] = objAnciao;
                 } else {
-                    anciaos.push({ mes, nome });
+                    anciaos.push(objAnciao);
                 }
             } else {
-                anciaos[editIndex] = { mes, nome };
+                anciaos[editIndex] = objAnciao;
             }
 
             await salvarTudoNoBanco();
@@ -817,16 +860,25 @@
             const ordemMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             anciaos.sort((a, b) => ordemMeses.indexOf(a.mes) - ordemMeses.indexOf(b.mes));
 
-            tbody.innerHTML = anciaos.map((item, index) => `
-                <tr>
-                    <td><span class="tag tag-purple">${item.mes}</span></td>
-                    <td><strong>${item.nome}</strong></td>
-                    <td>
-                        <button type="button" class="action-btn-edit" onclick="prepararEdicaoAnciao(${index})">✏️</button>
-                        <button type="button" class="action-btn-delete" onclick="excluirAnciaoMes(${index})">X</button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = anciaos.map((item, index) => {
+                const tagsMin = (item.ministeriosApoio && item.ministeriosApoio.length > 0)
+                    ? item.ministeriosApoio.map(m => `<span class="tag tag-blue">${m}</span>`).join('')
+                    : '<span style="font-size:0.75rem; color:#64748b;">Nenhum ministério associado</span>';
+
+                return `
+                    <tr>
+                        <td style="vertical-align: top;"><span class="tag tag-purple">${item.mes}</span></td>
+                        <td>
+                            <strong style="color: #f8fafc; font-size: 0.9rem;">${item.nome}</strong>
+                            <div style="margin-top: 4px;">${tagsMin}</div>
+                        </td>
+                        <td style="vertical-align: top;">
+                            <button type="button" class="action-btn-edit" onclick="prepararEdicaoAnciao(${index})">✏️</button>
+                            <button type="button" class="action-btn-delete" onclick="excluirAnciaoMes(${index})">X</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function prepararEdicaoAnciao(index) {
@@ -835,6 +887,8 @@
             document.getElementById('anciao-mes-select').value = item.mes;
             document.getElementById('anciao-nome-input').value = item.nome;
             
+            renderCheckboxesAnciaoMinisterios(item.ministeriosApoio || []);
+
             document.getElementById('title-form-anciao').innerText = '✏️ EDITAR ANCIÃO DO MÊS';
             document.getElementById('btn-salvar-anciao').innerText = 'Atualizar Ancião';
             document.getElementById('btn-cancelar-anciao').style.display = 'inline-block';
@@ -843,6 +897,7 @@
         function cancelarEdicaoAnciao() {
             document.getElementById('form-anciao-mes').reset();
             document.getElementById('anciao-edit-index').value = '-1';
+            renderCheckboxesAnciaoMinisterios([]);
             document.getElementById('title-form-anciao').innerText = '➕ DEFINIR ANCIÃO RESPONSÁVEL';
             document.getElementById('btn-salvar-anciao').innerText = 'Salvar Ancião do Mês';
             document.getElementById('btn-cancelar-anciao').style.display = 'none';
@@ -857,13 +912,12 @@
             }
         }
 
-        function obterAnciaoDoMesAtual() {
+        function obterAnciaoDoMesAtualObj() {
             const dataAtual = new Date();
             const mesesNomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             const mesNomeAtual = mesesNomes[dataAtual.getMonth()];
             
-            const anciaoEncontrado = anciaos.find(a => a.mes === mesNomeAtual);
-            return anciaoEncontrado ? anciaoEncontrado.nome : 'A definir';
+            return anciaos.find(a => a.mes === mesNomeAtual) || null;
         }
 
         function abrirFullscreenModal(modulo, event) {
@@ -928,21 +982,27 @@
                         <table class="tabela-mes-grid">
                             <thead>
                                 <tr>
-                                    <th>MÊS</th>
-                                    <th>ANCIÃO RESPONSÁVEL</th>
+                                    <th style="width: 20%;">MÊS</th>
+                                    <th style="width: 30%;">ANCIÃO RESPONSÁVEL</th>
+                                    <th style="width: 50%;">MINISTÉRIOS APOIADOS</th>
                                 </tr>
                             </thead>
                             <tbody>
                 `;
                 
                 if (anciaos.length === 0) {
-                    tabelaHTML += `<tr><td colspan="2" style="text-align:center; color:#94a3b8; padding: 20px;">Nenhum ancião cadastrado na escala.</td></tr>`;
+                    tabelaHTML += `<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding: 20px;">Nenhum ancião cadastrado na escala.</td></tr>`;
                 } else {
                     anciaos.forEach(item => {
+                        const tagsMin = (item.ministeriosApoio && item.ministeriosApoio.length > 0)
+                            ? item.ministeriosApoio.map(m => `<span class="tag tag-blue">${m}</span>`).join('')
+                            : '<span style="font-size:0.75rem; color:#64748b;">Nenhum ministério</span>';
+
                         tabelaHTML += `
                             <tr>
                                 <td><span class="data-tag-pill">${item.mes}</span></td>
                                 <td><strong style="color: #f8fafc; font-size: 1rem;">${item.nome}</strong></td>
+                                <td>${tagsMin}</td>
                             </tr>
                         `;
                     });
@@ -981,14 +1041,19 @@
             if(abaResumoAtual === 'dia') {
                 tituloEl.innerText = "☀️ Escala de Hoje (Visão Geral)";
                 const esc = escalas[hoje] || {};
-                const anciaoAtual = obterAnciaoDoMesAtual();
+                const objAnciao = obterAnciaoDoMesAtualObj();
+                const anciaoNome = objAnciao ? objAnciao.nome : 'A definir';
+                const anciaoMinApoio = (objAnciao && objAnciao.ministeriosApoio && objAnciao.ministeriosApoio.length > 0)
+                    ? objAnciao.ministeriosApoio.map(m => `<span class="tag tag-blue">${m}</span>`).join('')
+                    : 'Nenhum ministério específico';
                 
                 corpoEl.innerHTML = `
                     <div style="text-align: center; margin-bottom: 20px;">
                         <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800;">ESCALA DE HOJE</h2>
                     </div>
                     <div class="resumo-lista">
-                        <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaoAtual}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaoNome}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🤝 Apoio Ministerial</div><div class="resumo-value">${anciaoMinApoio}</div></div>
                         <div class="resumo-item"><div class="resumo-label">📖 Pregador / Orador</div><div class="resumo-value">${esc.pregador || 'A definir'}</div></div>
                         <div class="resumo-item"><div class="resumo-label">🎤 Música Especial</div><div class="resumo-value">${esc.especial || 'A definir'}</div></div>
                         <div class="resumo-item"><div class="resumo-label">🎶 Louvor Congregacional</div><div class="resumo-value">${esc.louvor || 'A definir'}</div></div>
@@ -1319,11 +1384,17 @@
             const esc = escalas[hoje] || {};
             const ocorrenciaHoje = calcularOcorrenciaDaData(hoje);
             const padraoHoje = padroesFixosMinisterios.find(p => p.ocorrencia === ocorrenciaHoje);
-            const anciaoAtual = obterAnciaoDoMesAtual();
+            
+            const objAnciao = obterAnciaoDoMesAtualObj();
+            const anciaoNome = objAnciao ? objAnciao.nome : 'A definir';
+            const anciaoMinApoio = (objAnciao && objAnciao.ministeriosApoio && objAnciao.ministeriosApoio.length > 0)
+                ? objAnciao.ministeriosApoio.map(m => `<span class="tag tag-blue">${m}</span>`).join('')
+                : '<span style="color:#94a3b8; font-weight: normal;">Livre</span>';
             
             const htmlConteudo = `
                 <div class="resumo-item"><div class="resumo-label">⛪ Ministério do Dia</div><div class="resumo-badge">${padraoHoje ? padraoHoje.ministerio : 'Livre'}</div></div>
-                <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaoAtual}</div></div>
+                <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaoNome}</div></div>
+                <div class="resumo-item"><div class="resumo-label">🤝 Apoio Ministerial</div><div class="resumo-value">${anciaoMinApoio}</div></div>
                 <div class="resumo-item"><div class="resumo-label">📖 Pregador</div><div class="resumo-value" style="color: #38bdf8; font-weight: 700;">${esc.pregador || 'A definir'}</div></div>
                 <div class="resumo-item"><div class="resumo-label">🎤 Música Especial</div><div class="resumo-value">${esc.especial || 'A definir'}</div></div>
                 <div class="resumo-item"><div class="resumo-label">🎶 Louvor</div><div class="resumo-value">${esc.louvor || 'A definir'}</div></div>
@@ -1389,6 +1460,7 @@
             sincronizarFormulariosMinisterios();
             renderMinisterios();
             atualizarSelects();
+            renderCheckboxesAnciaoMinisterios();
             carregarOpcoesLogin();
             alert('Ministério salvo!');
         }
@@ -1475,6 +1547,7 @@
                 await salvarTudoNoBanco();
                 renderMinisterios();
                 atualizarSelects();
+                renderCheckboxesAnciaoMinisterios();
                 carregarOpcoesLogin();
             }
         }
