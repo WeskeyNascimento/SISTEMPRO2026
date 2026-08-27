@@ -41,7 +41,7 @@
         .module-card.active { border-color: #38bdf8; }
 
         .module-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s ease-out, opacity 0.3s ease, padding 0.4s ease; padding: 0 25px; }
-        .module-card.active .module-content { max-height: 2500px; opacity: 1; padding: 10px 25px 25px 25px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .module-card.active .module-content { max-height: 3500px; opacity: 1; padding: 10px 25px 25px 25px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
 
         .sub-card { background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-top: 15px; }
         .sub-title { font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
@@ -52,7 +52,7 @@
         .form-control:focus { border-color: #38bdf8; }
         .form-control:disabled { background-color: #1a2234; color: #64748b; border-color: #1e293b; cursor: not-allowed; }
 
-        textarea.form-control { resize: vertical; min-height: 140px; font-family: monospace; line-height: 1.4; }
+        textarea.form-control { resize: vertical; min-height: 60px; font-family: inherit; line-height: 1.4; }
 
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
         th, td { text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -82,22 +82,20 @@
         .resumo-item .resumo-value { color: #94a3b8; font-weight: 500; font-size: 0.85rem; text-transform: uppercase; }
         .resumo-item .resumo-badge { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
 
-        .cronograma-pre { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 15px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: #e2e8f0; white-space: pre-wrap; line-height: 1.5; }
-
-        /* ESTILOS DO EDITOR DINÂMICO DE CRONOGRAMA */
-        .editor-cronograma-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; margin-bottom: 12px; }
-        .cronograma-row { display: flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; cursor: grab; }
-        .cronograma-row.dragging { opacity: 0.5; border: 1px dashed #38bdf8; }
-        .cronograma-row .handle { cursor: grab; color: #64748b; font-size: 1.1rem; padding: 0 4px; user-select: none; }
-        .cronograma-row input[type="color"] { width: 34px; height: 34px; border: none; background: transparent; cursor: pointer; border-radius: 4px; }
-        .cronograma-row input[type="text"] { background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 0.8rem; }
-        .cronograma-row .input-hora { width: 120px; text-align: center; }
-        .cronograma-row .input-titulo { flex: 2; font-weight: 600; }
-        .cronograma-row .input-detalhe { flex: 2; color: #94a3b8; }
+        /* ESTILOS DO CRONOGRAMA AVANÇADO */
+        .editor-cronograma-container { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; margin-bottom: 12px; }
+        .cronograma-item-card { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; position: relative; }
+        .cronograma-item-card.dragging { opacity: 0.5; border: 1px dashed #38bdf8; }
+        .cronograma-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .cronograma-item-header .handle { cursor: grab; color: #64748b; font-size: 1.2rem; user-select: none; }
+        .cronograma-item-header input[type="color"] { width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; border-radius: 4px; }
         
-        .cronograma-preview-card { background: #0f172a; border-radius: 10px; padding: 15px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 6px; }
-        .preview-row-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 6px; color: #000; font-weight: 700; font-size: 0.85rem; }
-        .preview-row-item .p-horario { font-size: 0.75rem; opacity: 0.85; }
+        .subitens-box { margin-left: 20px; padding-left: 10px; border-left: 2px solid #38bdf8; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+        .subitem-row { display: flex; align-items: center; gap: 6px; }
+
+        .cronograma-preview-card { background: #0f172a; border-radius: 10px; padding: 15px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 10px; }
+        .preview-row-item { padding: 10px 14px; border-radius: 8px; color: #000; font-weight: 700; font-size: 0.85rem; }
+        .preview-subitem-list { margin-top: 6px; padding-left: 15px; font-weight: 500; font-size: 0.8rem; opacity: 0.9; }
 
         .escala-mes-header-info { text-align: center; margin-bottom: 20px; }
         .escala-mes-header-info h2 { font-size: 1.3rem; color: #38bdf8; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; }
@@ -173,7 +171,7 @@
         </div>
 
         <div class="dashboard-grid">
-            <!-- CARD 1: RESUMO / ESCALA DO MÊS -->
+            <!-- CARD 1: RESUMO -->
             <div class="module-card active" id="card-resumo">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">☀️ Escala de Hoje (Resumo)</div>
@@ -187,7 +185,7 @@
                 </div>
             </div>
 
-            <!-- CARD 2: ORGANIZAÇÃO DO CULTO (EDITOR DE CRONOGRAMA INTEGRADO) -->
+            <!-- CARD 2: ORGANIZAÇÃO DO CULTO (EDITOR COMPLETO COM SUBITENS E MODELO) -->
             <div class="module-card active" id="card-culto">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">📖 Organização do Culto do Dia</div>
@@ -201,13 +199,18 @@
                         <div class="sub-title">⚙️ Cronograma Dinâmico do Culto</div>
                         <form id="form-cronograma-culto" onsubmit="salvarCronogramaCulto(event)">
                             <div class="form-group">
-                                <label>Modelo Pré-Definido</label>
+                                <label>Carregar Modelo Pré-Definido</label>
                                 <select id="culto-modelo-preset" class="form-control field-perm" onchange="carregarPresetCronograma(this.value)">
                                     <option value="">-- Escolher Modelo Padrão --</option>
                                     <option value="SABADO">Culto de Sábado (Estrela Dalva completo)</option>
                                     <option value="DOMINGO">Culto de Domingo</option>
                                     <option value="QUARTA">Culto de Quarta-feira</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nome do Modelo / Título Personalizado</label>
+                                <input type="text" id="culto-nome-modelo" class="form-control field-perm" placeholder="Ex: Culto de Sábado (Especial)">
                             </div>
 
                             <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
@@ -218,8 +221,8 @@
                             <div class="editor-cronograma-container" id="editor-cronograma-lista"></div>
 
                             <div class="form-group" style="margin-top: 15px;">
-                                <label>Observações / Texto Livre Adicional</label>
-                                <textarea id="culto-cronograma-texto" class="form-control field-perm" placeholder="Observações extras ou anotações livres..."></textarea>
+                                <label>Observações Gerais / Texto Livre</label>
+                                <textarea id="culto-cronograma-texto" class="form-control field-perm" placeholder="Anotações extras ou avisos gerais do culto..."></textarea>
                             </div>
 
                             <button type="submit" class="btn btn-success field-perm" style="width: 100%;">💾 Salvar Cronograma no Firebase</button>
@@ -247,7 +250,7 @@
                             </div>
                             
                             <div id="bloco-ministerio-fixo" class="ministerio-fixo-card">
-                                <div>🏛️ Ministério Sugerido (Padrão): <span id="span-min-fixo-nome">Nenhum definido</span></div>
+                                <div>🏛️ Ministério Sugerido: <span id="span-min-fixo-nome">Nenhum definido</span></div>
                                 <button type="button" class="btn-puxar" onclick="puxarMinisterioFixoParaEscala()">Puxar para Escala</button>
                             </div>
 
@@ -486,32 +489,40 @@
         let moduloAtualAberto = '';
         let abaResumoAtual = 'dia';
 
-        // PRESETS ESTRUTURADOS DE CRONOGRAMA COM CORES E HORÁRIOS
         const presetsCronogramaEspecial = {
-            SABADO: [
-                { title: "LOUVOR", time: "08:45 AS 09:00", color: "#fef3c7", detail: "1º e 2º Louvor" },
-                { title: "ESCOLA SABATINA", time: "09:00 AS 10:20", color: "#f97316", detail: "Abertura e Recapitulacão" },
-                { title: "DOXOLOGIA", time: "10:20 AS 10:23", color: "#3b82f6", detail: "Oração do Pregador" },
-                { title: "COMUNICAÇÃO (ANÚNCIOS)", time: "", color: "#ffffff", detail: "" },
-                { title: "OFERTÓRIO", time: "10:23 AS 10:30", color: "#eab308", detail: "Vídeo Provai e Vede" },
-                { title: "LOUVOR COM A IGREJA", time: "10:30 AS 10:45", color: "#22c55e", detail: "3 Músicas Congregacionais" },
-                { title: "ORAÇÃO DE JOELHOS", time: "10:45 AS 10:50", color: "#cbd5e1", detail: "" },
-                { title: "HISTORINHA DAS CRIANÇAS", time: "10:50 AS 10:57", color: "#ec4899", detail: "Momento Infantil" },
-                { title: "MENSAGEM BÍBLICA + ESPECIAL", time: "10:57 AS 11:45", color: "#2563eb", detail: "Sermão e Música" }
-            ],
-            DOMINGO: [
-                { title: "ORAÇÃO INICIAL", time: "19:00 AS 19:05", color: "#ffffff", detail: "" },
-                { title: "LOUVOR CONGREGACIONAL", time: "19:05 AS 19:20", color: "#22c55e", detail: "" },
-                { title: "OFERTÓRIO", time: "19:20 AS 19:30", color: "#eab308", detail: "" },
-                { title: "ORAÇÃO DE JOELHOS", time: "19:30 AS 19:35", color: "#cbd5e1", detail: "" },
-                { title: "SERMÃO E MÚSICA", time: "19:35 AS 20:15", color: "#3b82f6", detail: "Mensagem Bíblica" }
-            ],
-            QUARTA: [
-                { title: "ORAÇÃO E INTRODUÇÃO", time: "19:30 AS 19:35", color: "#ffffff", detail: "" },
-                { title: "GRUPO DE LOUVOR", time: "19:35 AS 19:50", color: "#22c55e", detail: "" },
-                { title: "PEDIDOS E AGRADECIMENTOS", time: "19:50 AS 20:00", color: "#ec4899", detail: "Oração Intercessora" },
-                { title: "ESTUDO BÍBLICO", time: "20:00 AS 20:30", color: "#3b82f6", detail: "Sermão de Quarta" }
-            ]
+            SABADO: {
+                nomeModelo: "Culto de Sábado (Estrela Dalva completo)",
+                items: [
+                    { title: "LOUVOR", time: "08:45 AS 09:00", color: "#fef3c7", obs: "1º e 2º Louvor", subitems: ["Oração Inicial", "Boas-vindas"] },
+                    { title: "ESCOLA SABATINA", time: "09:00 AS 10:20", color: "#f97316", obs: "Abertura e Recapitulação", subitems: ["Informativo das Missões", "Lição em Classes"] },
+                    { title: "DOXOLOGIA", time: "10:20 AS 10:23", color: "#3b82f6", obs: "", subitems: ["Oração do Pregador"] },
+                    { title: "COMUNICAÇÃO", time: "", color: "#ffffff", obs: "Anúncios Gerais", subitems: [] },
+                    { title: "OFERTÓRIO", time: "10:23 AS 10:30", color: "#eab308", obs: "Vídeo Provai e Vede", subitems: [] },
+                    { title: "LOUVOR CONGREGACIONAL", time: "10:30 AS 10:45", color: "#22c55e", obs: "3 Músicas", subitems: [] },
+                    { title: "ORAÇÃO DE JOELHOS", time: "10:45 AS 10:50", color: "#cbd5e1", obs: "", subitems: [] },
+                    { title: "MOMENTO INFANTIL", time: "10:50 AS 10:57", color: "#ec4899", obs: "Historinha", subitems: [] },
+                    { title: "MENSAGEM BÍBLICA", time: "10:57 AS 11:45", color: "#2563eb", obs: "Sermão + Música Especial", subitems: [] }
+                ]
+            },
+            DOMINGO: {
+                nomeModelo: "Culto de Domingo (Evangelismo)",
+                items: [
+                    { title: "ORAÇÃO INICIAL", time: "19:00 AS 19:05", color: "#ffffff", obs: "", subitems: [] },
+                    { title: "LOUVOR CONGREGACIONAL", time: "19:05 AS 19:20", color: "#22c55e", obs: "", subitems: [] },
+                    { title: "OFERTÓRIO", time: "19:20 AS 19:30", color: "#eab308", obs: "", subitems: [] },
+                    { title: "ORAÇÃO DE JOELHOS", time: "19:30 AS 19:35", color: "#cbd5e1", obs: "", subitems: [] },
+                    { title: "SERMÃO", time: "19:35 AS 20:15", color: "#3b82f6", obs: "Mensagem Bíblica", subitems: [] }
+                ]
+            },
+            QUARTA: {
+                nomeModelo: "Culto de Quarta-feira (Oração)",
+                items: [
+                    { title: "ORAÇÃO E INTRODUÇÃO", time: "19:30 AS 19:35", color: "#ffffff", obs: "", subitems: [] },
+                    { title: "GRUPO DE LOUVOR", time: "19:35 AS 19:50", color: "#22c55e", obs: "", subitems: [] },
+                    { title: "PEDIDOS E AGRADECIMENTOS", time: "19:50 AS 20:00", color: "#ec4899", obs: "Oração Intercessora", subitems: [] },
+                    { title: "ESTUDO BÍBLICO", time: "20:00 AS 20:30", color: "#3b82f6", obs: "", subitems: [] }
+                ]
+            }
         };
 
         const listaMinisteriosPadrao = [
@@ -561,7 +572,6 @@
             } catch (error) {
                 console.error("Erro ao carregar do Firebase:", error);
                 ministerios = listaMinisteriosPadrao;
-                alert("Erro ao conectar com o banco de dados. Verifique sua conexão.");
             } finally {
                 const cloudLoad = document.getElementById('loading-cloud');
                 if(cloudLoad) cloudLoad.style.display = 'none';
@@ -581,10 +591,9 @@
                     cronogramasCulto,
                     usuariosSistema
                 });
-                console.log("Dados salvos com sucesso no Firebase.");
             } catch (error) {
-                console.error("Erro detalhado ao sincronizar com o Firebase:", error);
-                alert("Erro ao salvar dados no Firebase. Veja o console para detalhes.");
+                console.error("Erro ao salvar no Firebase:", error);
+                alert("Erro ao salvar dados no Firebase.");
             }
         }
 
@@ -602,15 +611,14 @@
                     dataBackupRealizado: new Date().toISOString()
                 };
                 await dbNovo.collection("dados_igreja").doc("backup_sistema").set(dadosBackup);
-                alert("Backup realizado com sucesso no documento 'backup_sistema' do Firebase!");
+                alert("Backup realizado com sucesso!");
             } catch (error) {
-                console.error("Erro ao fazer backup:", error);
-                alert("Erro ao realizar backup no Firebase.");
+                alert("Erro ao realizar backup.");
             }
         }
 
         async function restaurarBackupDoFirebase() {
-            if (!confirm("Deseja substituir os dados atuais do sistema pelos dados salvos no backup do Firebase?")) return;
+            if (!confirm("Deseja substituir os dados atuais pelo backup do Firebase?")) return;
             try {
                 const docSnap = await dbNovo.collection("dados_igreja").doc("backup_sistema").get();
                 if (docSnap.exists) {
@@ -626,13 +634,12 @@
                     
                     await salvarTudoNoBanco();
                     initSistema();
-                    alert("Sistema restaurado com sucesso a partir do backup do Firebase!");
+                    alert("Sistema restaurado do backup!");
                 } else {
-                    alert("Nenhum documento de backup ('backup_sistema') foi encontrado.");
+                    alert("Nenhum backup encontrado.");
                 }
             } catch (error) {
-                console.error("Erro ao restaurar backup:", error);
-                alert("Erro ao restaurar dados do backup.");
+                alert("Erro ao restaurar backup.");
             }
         }
 
@@ -643,7 +650,6 @@
 
             carregarOpcoesLogin();
             renderMinisterios();
-            renderAnciaos();
             renderEventos();
             renderPadroesMinisterios();
             renderUsuariosSistema();
@@ -651,8 +657,6 @@
             verificarDadosData();
             renderResumoHoje();
         }
-
-        function renderAnciaos() {}
 
         function carregarOpcoesLogin() {
             const select = document.getElementById('login-role-select');
@@ -680,7 +684,6 @@
         function fazerLoginSeguro() {
             const perfilValor = document.getElementById('login-role-select').value;
             const senhaDigitada = document.getElementById('login-password').value;
-
             let detalheTopo = "";
 
             if (perfilValor === 'ADMIN') {
@@ -690,22 +693,13 @@
                 const nomeUser = perfilValor.replace('USR_', '');
                 const usuarioEncontrado = usuariosSistema.find(u => u.nome === nomeUser);
                 if (!usuarioEncontrado || usuarioEncontrado.senha !== senhaDigitada) {
-                    alert('Senha incorreta para este usuário!');
+                    alert('Senha incorreta!');
                     return;
                 }
                 usuarioLogadoPerfil = usuarioEncontrado.perfil;
-                
-                const minVinculado = ministerios.find(m => m.nome === usuarioEncontrado.perfil);
-                if(minVinculado) {
-                    detalheTopo = `👑 Líder: ${minVinculado.lider || usuarioEncontrado.nome} | 👥 Equipe: ${minVinculado.equipe || 'Não informada'}`;
-                }
             } else {
                 const nomeMin = perfilValor.replace('MIN_', '');
                 usuarioLogadoPerfil = nomeMin;
-                const minVinculado = ministerios.find(m => m.nome === nomeMin);
-                if(minVinculado) {
-                    detalheTopo = `👑 Líder: ${minVinculado.lider || 'Não informado'} | 👥 Equipe: ${minVinculado.equipe || 'Não informada'}`;
-                }
             }
 
             transicionarParaApp(`👤 Perfil: ${usuarioLogadoPerfil}`, detalheTopo);
@@ -716,11 +710,7 @@
             document.getElementById('app-screen').style.display = 'block';
             
             const badgeEl = document.getElementById('current-user-display');
-            let htmlBadge = `<span class="user-title">${textoBadge}</span>`;
-            if (detalheTopo) {
-                htmlBadge += `<span class="user-details">${detalheTopo}</span>`;
-            }
-            badgeEl.innerHTML = htmlBadge;
+            badgeEl.innerHTML = `<span class="user-title">${textoBadge}</span>`;
 
             aplicarPermissoesPerfil();
             verificarDadosData();
@@ -729,7 +719,6 @@
         function sairDoSistema() {
             document.getElementById('app-screen').style.display = 'none';
             document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('login-password').value = '';
         }
 
         function aplicarPermissoesPerfil() {
@@ -766,32 +755,36 @@
 
                 let htmlContent = `
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800;">CRONOGRAMA DE CULTO</h2>
+                        <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800;">${(cData && cData.nomeModelo) ? cData.nomeModelo : 'CRONOGRAMA DE CULTO'}</h2>
                         <p style="color: #94a3b8; font-size: 0.85rem;">Data da Programação: ${dataSel}</p>
                     </div>
                 `;
 
-                if (cData && typeof cData === 'object' && cData.items && cData.items.length > 0) {
+                if (cData && cData.items && cData.items.length > 0) {
                     htmlContent += `<div class="cronograma-preview-card">`;
                     cData.items.forEach(it => {
                         const bg = it.color || '#ffffff';
+                        let subitemsStr = "";
+                        if(it.subitems && it.subitems.length > 0) {
+                            subitemsStr = `<div class="preview-subitem-list"><ul>` + it.subitems.map(s => `<li>${s}</li>`).join('') + `</ul></div>`;
+                        }
                         htmlContent += `
                             <div class="preview-row-item" style="background-color: ${bg};">
-                                <div>
+                                <div style="display:flex; justify-size:space-between; justify-content:space-between; align-items:center;">
                                     <div>${it.title || ''}</div>
-                                    ${it.detail ? `<div style="font-size:0.75rem; font-weight:normal; opacity:0.8;">${it.detail}</div>` : ''}
+                                    <div style="font-size:0.75rem;">${it.time || ''}</div>
                                 </div>
-                                <div class="p-horario">${it.time || ''}</div>
+                                ${it.obs ? `<div style="font-size:0.75rem; font-weight:normal; opacity:0.85; margin-top:2px;">Obs: ${it.obs}</div>` : ''}
+                                ${subitemsStr}
                             </div>
                         `;
                     });
                     htmlContent += `</div>`;
                     if (cData.textoExtra) {
-                        htmlContent += `<div class="sub-card" style="margin-top:15px;"><div class="sub-title">Observações</div><div style="font-size:0.85rem; color:#e2e8f0;">${cData.textoExtra}</div></div>`;
+                        htmlContent += `<div class="sub-card" style="margin-top:15px;"><div class="sub-title">Observações Gerais</div><div style="font-size:0.85rem; color:#e2e8f0;">${cData.textoExtra}</div></div>`;
                     }
                 } else {
-                    const textoLivre = (typeof cData === 'string') ? cData : "Nenhum cronograma definido para esta data.";
-                    htmlContent += `<div class="cronograma-pre">${textoLivre}</div>`;
+                    htmlContent += `<div style="text-align:center; color:#94a3b8;">Nenhum cronograma definido para esta data.</div>`;
                 }
 
                 document.getElementById('modal-content-body').innerHTML = htmlContent;
@@ -802,9 +795,7 @@
                 document.getElementById('modal-titulo-view').innerText = cardTitle;
                 document.getElementById('modal-content-body').innerHTML = originalCardContent;
                 
-                if(modulo === 'ministerios') {
-                    renderMinisterios();
-                }
+                if(modulo === 'ministerios') renderMinisterios();
             }
         }
 
@@ -831,8 +822,7 @@
                 
                 corpoEl.innerHTML = `
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800; margin-bottom: 4px;">ESCALA DE HOJE</h2>
-                        <p style="color: #94a3b8; font-size: 0.85rem;">Data Atual</p>
+                        <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800;">ESCALA DE HOJE</h2>
                     </div>
                     <div class="resumo-lista">
                         <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaos[0]?.nome || 'Marcilio'}</div></div>
@@ -850,7 +840,7 @@
                 let linhasTabela = "";
                 
                 if(datasOrdenadas.length === 0) {
-                    linhasTabela = `<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding: 20px;">Nenhuma escala cadastrada ainda.</td></tr>`;
+                    linhasTabela = `<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding: 20px;">Nenhuma escala cadastrada.</td></tr>`;
                 } else {
                     datasOrdenadas.forEach(dataStr => {
                         const item = escalas[dataStr];
@@ -860,24 +850,14 @@
                         linhasTabela += `
                             <tr>
                                 <td><span class="data-tag-pill">${dataFormatada}</span></td>
-                                <td>
-                                    <div><strong>Pregador:</strong> ${item.pregador || '-'}</div>
-                                    <div><strong>Louvor:</strong> ${item.louvor || '-'}</div>
-                                </td>
-                                <td>
-                                    <div><strong>Música:</strong> ${item.especial || '-'}</div>
-                                    <div><strong>Diáconos:</strong> ${item.diaconos || '-'}</div>
-                                </td>
+                                <td><div><strong>Pregador:</strong> ${item.pregador || '-'}</div><div><strong>Louvor:</strong> ${item.louvor || '-'}</div></td>
+                                <td><div><strong>Música:</strong> ${item.especial || '-'}</div><div><strong>Diáconos:</strong> ${item.diaconos || '-'}</div></td>
                             </tr>
                         `;
                     });
                 }
 
                 corpoEl.innerHTML = `
-                    <div class="escala-mes-header-info">
-                        <h2>ESCALA COMPLETA SALVA</h2>
-                        <p>Ancião Responsável: <strong>${anciaos[0]?.nome || 'Marcilio'}</strong></p>
-                    </div>
                     <div class="tabela-mes-card">
                         <table class="tabela-mes-grid">
                             <thead>
@@ -907,43 +887,83 @@
             });
         }
 
-        // LÓGICA DO EDITOR DE CRONOGRAMA DINÂMICO COM INPUTS E REMOÇÃO
-        function criarElementoLinhaCronograma(title = '', time = '', detail = '', color = '#ffffff') {
+        // --- SISTEMA DINÂMICO DE ITENS E SUBITENS DO CRONOGRAMA ---
+        function criarElementoLinhaCronograma(title = '', time = '', obs = '', color = '#ffffff', subitems = []) {
             const div = document.createElement('div');
-            div.className = 'cronograma-row';
+            div.className = 'cronograma-item-card';
             div.draggable = true;
+
+            let subitemsHTML = '';
+            subitems.forEach(subText => {
+                subitemsHTML += `
+                    <div class="subitem-row">
+                        <input type="text" class="form-control field-perm subitem-input" value="${subText}" placeholder="Texto do Subitem">
+                        <button type="button" class="action-btn-delete field-perm" style="width:28px; height:28px;" onclick="removerSubitem(this)">✕</button>
+                    </div>
+                `;
+            });
+
             div.innerHTML = `
-                <span class="handle" title="Arrastar para Reordenar">☰</span>
-                <input type="color" value="${color}" title="Selecione a Cor">
-                <input type="text" class="input-hora field-perm" placeholder="Ex: 09:00 AS 10:00" value="${time}">
-                <input type="text" class="input-titulo field-perm" placeholder="Parte do Culto" value="${title}">
-                <input type="text" class="input-detalhe field-perm" placeholder="Detalhes / Responsável" value="${detail}">
-                <button type="button" class="action-btn-delete field-perm" title="Apagar Item" onclick="removerLinhaCronograma(this)">✕</button>
+                <div class="cronograma-item-header">
+                    <span class="handle" title="Arrastar">☰</span>
+                    <input type="color" value="${color}" title="Cor de Destaque">
+                    <input type="text" class="form-control field-perm input-hora" style="width: 120px;" placeholder="Ex: 09:00 AS 10:00" value="${time}">
+                    <input type="text" class="form-control field-perm input-titulo" style="flex:1;" placeholder="Parte do Culto / Item" value="${title}">
+                    <button type="button" class="action-btn-delete field-perm" title="Apagar Item" onclick="removerLinhaCronograma(this)">✕</button>
+                </div>
+                <div style="margin-bottom: 6px;">
+                    <textarea class="form-control field-perm input-obs" placeholder="Observação deste item (opcional)...">${obs}</textarea>
+                </div>
+                <div class="subitens-box">
+                    <div style="display: flex; justify-size: space-between; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span style="font-size: 0.7rem; color: #38bdf8; font-weight: 700;">SUBITENS</span>
+                        <button type="button" class="btn btn-primary field-perm" style="padding: 2px 6px; font-size: 0.65rem;" onclick="adicionarSubitem(this)">+ Subitem</button>
+                    </div>
+                    <div class="subitens-lista">${subitemsHTML}</div>
+                </div>
             `;
             return div;
         }
 
-        function adicionarLinhaCronograma(title = '', time = '', detail = '', color = '#ffffff') {
+        function adicionarLinhaCronograma(title = '', time = '', obs = '', color = '#ffffff', subitems = []) {
             const container = document.getElementById('editor-cronograma-lista');
-            const elementoLinha = criarElementoLinhaCronograma(title, time, detail, color);
+            const elementoLinha = criarElementoLinhaCronograma(title, time, obs, color, subitems);
             container.appendChild(elementoLinha);
             habilitarDragAndDropCronograma();
             aplicarPermissoesPerfil();
         }
 
         function removerLinhaCronograma(btnElement) {
-            const linha = btnElement.closest('.cronograma-row');
-            if (linha) {
-                linha.remove();
-            }
+            const card = btnElement.closest('.cronograma-item-card');
+            if (card) card.remove();
+        }
+
+        function adicionarSubitem(btnElement) {
+            const containerSub = btnElement.closest('.subitens-box').querySelector('.subitens-lista');
+            const row = document.createElement('div');
+            row.className = 'subitem-row';
+            row.innerHTML = `
+                <input type="text" class="form-control field-perm subitem-input" value="" placeholder="Texto do Subitem">
+                <button type="button" class="action-btn-delete field-perm" style="width:28px; height:28px;" onclick="removerSubitem(this)">✕</button>
+            `;
+            containerSub.appendChild(row);
+            aplicarPermissoesPerfil();
+        }
+
+        function removerSubitem(btnElement) {
+            const row = btnElement.closest('.subitem-row');
+            if (row) row.remove();
         }
 
         function carregarPresetCronograma(chave) {
             if (chave && presetsCronogramaEspecial[chave]) {
+                const preset = presetsCronogramaEspecial[chave];
+                document.getElementById('culto-nome-modelo').value = preset.nomeModelo;
+                
                 const container = document.getElementById('editor-cronograma-lista');
                 container.innerHTML = '';
-                presetsCronogramaEspecial[chave].forEach(item => {
-                    adicionarLinhaCronograma(item.title, item.time, item.detail, item.color);
+                preset.items.forEach(item => {
+                    adicionarLinhaCronograma(item.title, item.time, item.obs, item.color, item.subitems);
                 });
             }
         }
@@ -952,7 +972,7 @@
             const container = document.getElementById('editor-cronograma-lista');
             let itemArrastado = null;
 
-            container.querySelectorAll('.cronograma-row').forEach(row => {
+            container.querySelectorAll('.cronograma-item-card').forEach(row => {
                 row.addEventListener('dragstart', () => {
                     itemArrastado = row;
                     row.classList.add('dragging');
@@ -974,7 +994,7 @@
         }
 
         function getElementoAposArrasto(container, y) {
-            const elementos = [...container.querySelectorAll('.cronograma-row:not(.dragging)')];
+            const elementos = [...container.querySelectorAll('.cronograma-item-card:not(.dragging)')];
             return elementos.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
                 const offset = y - box.top - box.height / 2;
@@ -991,27 +1011,35 @@
             const dataSel = document.getElementById('escala-data').value;
             if(!dataSel) { alert('Selecione uma data na Escala!'); return; }
 
-            const rows = document.querySelectorAll('#editor-cronograma-lista .cronograma-row');
+            const nomeModelo = document.getElementById('culto-nome-modelo').value;
+            const itemCards = document.querySelectorAll('#editor-cronograma-lista .cronograma-item-card');
             const items = [];
-            rows.forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                items.push({
-                    color: inputs[0].value,
-                    time: inputs[1].value,
-                    title: inputs[2].value,
-                    detail: inputs[3].value
+
+            itemCards.forEach(card => {
+                const color = card.querySelector('input[type="color"]').value;
+                const time = card.querySelector('.input-hora').value;
+                const title = card.querySelector('.input-titulo').value;
+                const obs = card.querySelector('.input-obs').value;
+                
+                const subinputs = card.querySelectorAll('.subitem-input');
+                const subitems = [];
+                subinputs.forEach(sInp => {
+                    if(sInp.value.trim() !== '') subitems.push(sInp.value.trim());
                 });
+
+                items.push({ color, time, title, obs, subitems });
             });
 
             const textoExtra = document.getElementById('culto-cronograma-texto').value;
 
             cronogramasCulto[dataSel] = {
+                nomeModelo,
                 items,
                 textoExtra
             };
 
             await salvarTudoNoBanco();
-            alert('Cronograma do culto salvo com sucesso para a data selecionada!');
+            alert('Cronograma do culto salvo com sucesso!');
         }
 
         function calcularOcorrenciaDaData(dataStr) {
@@ -1028,9 +1056,7 @@
             let contador = 0;
             for (let dTest = 1; dTest <= dia; dTest++) {
                 const dtTemp = new Date(ano, mes - 1, dTest);
-                if (dtTemp.getDay() === diaSemanaNum) {
-                    contador++;
-                }
+                if (dtTemp.getDay() === diaSemanaNum) contador++;
             }
 
             return `${contador}º ${nomeDiaSemana}`.replace('1º Quarta-feira', '1ª Quarta-feira').replace('2º Quarta-feira', '2ª Quarta-feira').replace('3º Quarta-feira', '3ª Quarta-feira').replace('4º Quarta-feira', '4ª Quarta-feira').replace('5º Quarta-feira', '5ª Quarta-feira');
@@ -1052,16 +1078,19 @@
             container.innerHTML = '';
             
             const cData = cronogramasCulto[dataSel];
-            if (cData && typeof cData === 'object' && cData.items) {
-                cData.items.forEach(it => {
-                    adicionarLinhaCronograma(it.title, it.time, it.detail, it.color);
-                });
+            if (cData && typeof cData === 'object') {
+                document.getElementById('culto-nome-modelo').value = cData.nomeModelo || '';
                 document.getElementById('culto-cronograma-texto').value = cData.textoExtra || '';
-            } else if (typeof cData === 'string') {
-                document.getElementById('culto-cronograma-texto').value = cData;
+                if(cData.items) {
+                    cData.items.forEach(it => {
+                        adicionarLinhaCronograma(it.title, it.time, it.obs, it.color, it.subitems || []);
+                    });
+                }
             } else {
+                document.getElementById('culto-nome-modelo').value = '';
                 document.getElementById('culto-cronograma-texto').value = '';
             }
+
             document.getElementById('culto-modelo-preset').value = '';
 
             const ocorrenciaCalculada = calcularOcorrenciaDaData(dataSel);
@@ -1080,24 +1109,18 @@
         }
 
         function selecionarMinisterioManual(nomeMinisterio) {
-            if (nomeMinisterio) {
-                document.getElementById('esc-pregador').value = nomeMinisterio;
-            }
+            if (nomeMinisterio) document.getElementById('esc-pregador').value = nomeMinisterio;
         }
 
         function puxarMinisterioFixoParaEscala() {
-            if (!window._ministerioFixoTemp) {
-                alert('Nenhum ministério configurado para esta ocorrência na tabela fixa.');
-                return;
-            }
+            if (!window._ministerioFixoTemp) { alert('Nenhum ministério configurado.'); return; }
             document.getElementById('esc-pregador').value = window._ministerioFixoTemp;
-            alert('Ministério fixo puxado para a escala com sucesso!');
         }
 
         async function salvarEscala(e) {
             e.preventDefault();
             const dataSel = document.getElementById('escala-data').value;
-            if(!dataSel) { alert('Selecione uma data!'); return; }
+            if(!dataSel) return;
 
             escalas[dataSel] = {
                 pregador: document.getElementById('esc-pregador').value,
@@ -1109,23 +1132,19 @@
             };
 
             await salvarTudoNoBanco();
-            alert('Escala salva e atualizada com sucesso!');
+            alert('Escala salva com sucesso!');
             renderResumoHoje();
         }
 
         async function excluirEscalaAtual() {
             const dataSel = document.getElementById('escala-data').value;
-            if(!dataSel || !escalas[dataSel]) {
-                alert('Não há dados salvos para esta data.');
-                return;
-            }
+            if(!dataSel || !escalas[dataSel]) return;
 
-            if(confirm(`Deseja realmente excluir/limpar a escala do dia ${dataSel}?`)) {
+            if(confirm(`Deseja excluir a escala do dia ${dataSel}?`)) {
                 delete escalas[dataSel];
                 await salvarTudoNoBanco();
                 verificarDadosData();
                 renderResumoHoje();
-                alert('Escala excluída com sucesso!');
             }
         }
 
@@ -1164,7 +1183,7 @@
         }
 
         async function excluirUsuarioSistema(index) {
-            if(confirm("Deseja realmente excluir este usuário?")) {
+            if(confirm("Deseja excluir este usuário?")) {
                 usuariosSistema.splice(index, 1);
                 await salvarTudoNoBanco();
                 renderUsuariosSistema();
@@ -1191,28 +1210,23 @@
         async function salvarMinisterioContexto(e, formElement) {
             e.preventDefault();
             const container = formElement.closest('.modal-container') || formElement.closest('.module-card') || document.body;
-            
             const indexEdit = parseInt(container.querySelector('.min-edit-index').value);
+            
             const novoMinisterio = {
                 nome: container.querySelector('.min-nome').value,
                 lider: container.querySelector('.min-lider').value,
                 equipe: container.querySelector('.min-equipe').value
             };
 
-            if (indexEdit === -1) {
-                ministerios.push(novoMinisterio);
-            } else {
-                ministerios[indexEdit] = novoMinisterio;
-            }
+            if (indexEdit === -1) ministerios.push(novoMinisterio);
+            else ministerios[indexEdit] = novoMinisterio;
 
             await salvarTudoNoBanco();
-            
             sincronizarFormulariosMinisterios();
             renderMinisterios();
             atualizarSelects();
             carregarOpcoesLogin();
-
-            alert('Ministério salvo com sucesso!');
+            alert('Ministério salvo!');
         }
 
         function sincronizarFormulariosMinisterios() {
@@ -1239,9 +1253,7 @@
             if(tbodies.length === 0) return;
             
             if(ministerios.length === 0) {
-                tbodies.forEach(tbody => {
-                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum ministério cadastrado.</td></tr>`;
-                });
+                tbodies.forEach(tbody => tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum ministério cadastrado.</td></tr>`);
                 return;
             }
 
@@ -1250,15 +1262,13 @@
                     <td><strong>${m.nome}</strong></td>
                     <td style="color: #94a3b8;">${m.lider}</td>
                     <td>
-                        <button type="button" class="action-btn-edit" title="Editar" onclick="prepararEdicaoContexto(${i}, this)">✏️</button>
-                        <button type="button" class="action-btn-delete" title="Excluir" onclick="excluirMinisterio(${i})">X</button>
+                        <button type="button" class="action-btn-edit" onclick="prepararEdicaoContexto(${i}, this)">✏️</button>
+                        <button type="button" class="action-btn-delete" onclick="excluirMinisterio(${i})">X</button>
                     </td>
                 </tr>
             `).join('');
 
-            tbodies.forEach(tbody => {
-                tbody.innerHTML = htmlRows;
-            });
+            tbodies.forEach(tbody => tbody.innerHTML = htmlRows);
         }
 
         function prepararEdicaoContexto(i, btnElement) {
@@ -1271,10 +1281,7 @@
             escopo.querySelector('.min-equipe').value = m.equipe || '';
             
             const titulo = escopo.querySelector('.form-ministerio-titulo');
-            if(titulo) {
-                titulo.innerText = '✏️ EDITAR MINISTÉRIO';
-                titulo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+            if(titulo) titulo.innerText = '✏️ EDITAR MINISTÉRIO';
             
             const btnSalvar = escopo.querySelector('.btn-salvar-ministerio');
             if(btnSalvar) btnSalvar.innerText = 'Atualizar Ministério';
@@ -1299,18 +1306,12 @@
         }
 
         async function excluirMinisterio(i) {
-            const nomeMin = ministerios[i].nome;
-            if(confirm(`Deseja realmente excluir o ministério "${nomeMin}"?`)) {
+            if(confirm(`Deseja excluir o ministério "${ministerios[i].nome}"?`)) {
                 ministerios.splice(i, 1);
                 await salvarTudoNoBanco();
                 renderMinisterios();
                 atualizarSelects();
                 carregarOpcoesLogin();
-
-                if (document.getElementById('fullscreen-modal').style.display === 'block' && moduloAtualAberto === 'ministerios') {
-                    document.getElementById('modal-content-body').innerHTML = document.querySelector('#card-ministerios .module-content').innerHTML;
-                    renderMinisterios();
-                }
             }
         }
 
@@ -1324,7 +1325,7 @@
             await salvarTudoNoBanco();
             document.getElementById('form-evento').reset();
             renderEventos();
-            alert('Evento agendado com sucesso!');
+            alert('Evento agendado!');
         }
 
         function renderEventos() {
@@ -1347,23 +1348,19 @@
             const minSel = document.getElementById('mindia-ministerio').value;
 
             padroesFixosMinisterios = padroesFixosMinisterios.filter(p => p.ocorrencia !== ocorrenciaSel);
-
-            padroesFixosMinisterios.push({
-                ocorrencia: ocorrenciaSel,
-                ministerio: minSel
-            });
+            padroesFixosMinisterios.push({ ocorrencia: ocorrenciaSel, ministerio: minSel });
 
             await salvarTudoNoBanco();
             renderPadroesMinisterios();
             verificarDadosData();
-            alert('Padrão fixo do mês salvo com sucesso!');
+            alert('Padrão salvo!');
         }
 
         function renderPadroesMinisterios() {
             const tbody = document.getElementById('table-dias-ministerios');
             if(!tbody) return;
             if(padroesFixosMinisterios.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum padrão fixado ainda.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum padrão fixado.</td></tr>`;
                 return;
             }
             tbody.innerHTML = padroesFixosMinisterios.map((p, i) => `
@@ -1389,10 +1386,7 @@
 
             if(selectMinDia) selectMinDia.innerHTML = options;
             if(selectMinEscala) selectMinEscala.innerHTML = `<option value="">-- Selecionar Ministério Cadastrado --</option>` + options;
-            
-            if(selectUserPerfil) {
-                selectUserPerfil.innerHTML = `<option value="Líder de Ministério (Geral)">Líder de Ministério (Geral)</option>` + options;
-            }
+            if(selectUserPerfil) selectUserPerfil.innerHTML = `<option value="Líder de Ministério (Geral)">Líder de Ministério (Geral)</option>` + options;
         }
 
         carregarDadosDoBanco();
