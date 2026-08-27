@@ -26,7 +26,6 @@
         .nav-brand span { color: #38bdf8; }
         .user-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: 0.85rem; background: rgba(15, 23, 42, 0.5); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .user-badge .user-title { font-weight: 700; color: #38bdf8; }
-        .user-badge .user-details { font-size: 0.75rem; color: #94a3b8; }
 
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
         .module-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
@@ -50,7 +49,6 @@
         .form-group label { display: block; font-size: 0.7rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
         .form-control { width: 100%; padding: 10px; background-color: #0f172a; border: 1px solid #334155; border-radius: 8px; color: white; font-size: 0.85rem; outline: none; transition: border 0.2s; }
         .form-control:focus { border-color: #38bdf8; }
-        .form-control:disabled { background-color: #1a2234; color: #64748b; border-color: #1e293b; cursor: not-allowed; }
 
         textarea.form-control { resize: vertical; min-height: 60px; font-family: inherit; line-height: 1.4; }
 
@@ -82,7 +80,6 @@
         .resumo-item .resumo-value { color: #94a3b8; font-weight: 500; font-size: 0.85rem; text-transform: uppercase; }
         .resumo-item .resumo-badge { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
 
-        /* ESTILOS DO CRONOGRAMA AVANÇADO */
         .editor-cronograma-container { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; margin-bottom: 12px; }
         .cronograma-item-card { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; position: relative; }
         .cronograma-item-card.dragging { opacity: 0.5; border: 1px dashed #38bdf8; }
@@ -97,10 +94,6 @@
         .preview-row-item { padding: 10px 14px; border-radius: 8px; color: #000; font-weight: 700; font-size: 0.85rem; }
         .preview-subitem-list { margin-top: 6px; padding-left: 15px; font-weight: 500; font-size: 0.8rem; opacity: 0.9; }
 
-        .escala-mes-header-info { text-align: center; margin-bottom: 20px; }
-        .escala-mes-header-info h2 { font-size: 1.3rem; color: #38bdf8; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .escala-mes-header-info p { font-size: 0.85rem; color: #94a3b8; }
-        
         .tabela-mes-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-top: 15px; }
         .tabela-mes-grid { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
         .tabela-mes-grid th { text-align: left; padding: 12px; color: #64748b; font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.08); }
@@ -185,7 +178,7 @@
                 </div>
             </div>
 
-            <!-- CARD 2: ORGANIZAÇÃO DO CULTO (EDITOR COMPLETO COM SUBITENS E MODELO) -->
+            <!-- CARD 2: ORGANIZAÇÃO DO CULTO DO DIA -->
             <div class="module-card active" id="card-culto">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">📖 Organização do Culto do Dia</div>
@@ -277,7 +270,58 @@
                 </div>
             </div>
 
-            <!-- CARD 4: DIAS DE MINISTÉRIOS -->
+            <!-- CARD 4: ANCIÃO DO MÊS (NOVO - EXCLUSIVO ADMIN) -->
+            <div class="module-card admin-only active" id="card-anciaoMes">
+                <div class="module-header" onclick="toggleCard(this, event)">
+                    <div class="module-title">👔 Ancião do Mês</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" onclick="abrirFullscreenModal('anciaoMes', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="sub-card">
+                        <div class="sub-title" id="title-form-anciao">➕ Definir Ancião Responsável</div>
+                        <form id="form-anciao-mes" onsubmit="salvarAnciaoMes(event)">
+                            <input type="hidden" id="anciao-edit-index" value="-1">
+                            <div class="form-group">
+                                <label>Mês / Período</label>
+                                <select id="anciao-mes-select" class="form-control" required>
+                                    <option value="Janeiro">Janeiro</option>
+                                    <option value="Fevereiro">Fevereiro</option>
+                                    <option value="Março">Março</option>
+                                    <option value="Abril">Abril</option>
+                                    <option value="Maio">Maio</option>
+                                    <option value="Junho">Junho</option>
+                                    <option value="Julho">Julho</option>
+                                    <option value="Agosto">Agosto</option>
+                                    <option value="Setembro">Setembro</option>
+                                    <option value="Outubro">Outubro</option>
+                                    <option value="Novembro">Novembro</option>
+                                    <option value="Dezembro">Dezembro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nome do Ancião</label>
+                                <input type="text" id="anciao-nome-input" class="form-control" required placeholder="Ex: Marcilio ou Pr. João">
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="submit" id="btn-salvar-anciao" class="btn btn-success" style="flex: 2;">Salvar Ancião do Mês</button>
+                                <button type="button" id="btn-cancelar-anciao" class="btn btn-danger" style="flex: 1; display: none;" onclick="cancelarEdicaoAnciao()">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="sub-card" style="max-height:250px; overflow-y:auto;">
+                        <div class="sub-title">Escala de Anciãos Definida</div>
+                        <table>
+                            <thead><tr><th>Mês</th><th>Ancião</th><th>Ações</th></tr></thead>
+                            <tbody id="table-anciao-mes"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 5: DIAS DE MINISTÉRIOS -->
             <div class="module-card admin-only active" id="card-diasMinisterios">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">⛪ Dias de Ministérios (Tabela Fixa)</div>
@@ -327,7 +371,7 @@
                 </div>
             </div>
 
-            <!-- CARD 5: MINISTÉRIOS & EQUIPE -->
+            <!-- CARD 6: MINISTÉRIOS & EQUIPE -->
             <div class="module-card admin-only active" id="card-ministerios">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">📋 Ministérios & Cadastro</div>
@@ -360,7 +404,7 @@
                 </div>
             </div>
 
-            <!-- CARD 6: EVENTOS -->
+            <!-- CARD 7: EVENTOS -->
             <div class="module-card admin-only" id="card-eventos">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">📅 Eventos & Cultos Especiais</div>
@@ -391,7 +435,7 @@
                 </div>
             </div>
 
-            <!-- CARD 7: USUÁRIOS E BACKUP DEDICADO -->
+            <!-- CARD 8: USUÁRIOS E BACKUP DEDICADO -->
             <div class="module-card admin-only active" id="card-usuarios-backup">
                 <div class="module-header" onclick="toggleCard(this, event)">
                     <div class="module-title">🔐 Usuários, Lideranças & Backup no Firebase</div>
@@ -477,7 +521,7 @@
         const dbNovo = firebase.firestore(appNovo);
 
         let senhaAdmin = 'admin123';
-        let anciaos = [{ nome: 'Marcilio' }];
+        let anciaos = []; // Estrutura: [{ mes: 'Janeiro', nome: 'Marcilio' }]
         let ministerios = [];
         let eventos = [];
         let padroesFixosMinisterios = [];
@@ -554,7 +598,7 @@
                 if (docSnap.exists) {
                     const dados = docSnap.data();
                     senhaAdmin = dados.senhaAdmin || 'admin123';
-                    anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
+                    anciaos = dados.anciaos || [];
                     ministerios = (dados.ministerios && dados.ministerios.length > 0) ? dados.ministerios : listaMinisteriosPadrao;
                     eventos = dados.eventos || [];
                     padroesFixosMinisterios = dados.padroesFixosMinisterios || [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
@@ -564,6 +608,7 @@
                 } else {
                     ministerios = listaMinisteriosPadrao;
                     padroesFixosMinisterios = [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
+                    anciaos = [];
                     escalas = {};
                     cronogramasCulto = {};
                     usuariosSistema = [];
@@ -624,7 +669,7 @@
                 if (docSnap.exists) {
                     const dados = docSnap.data();
                     senhaAdmin = dados.senhaAdmin || 'admin123';
-                    anciaos = dados.anciaos || [{ nome: 'Marcilio' }];
+                    anciaos = dados.anciaos || [];
                     ministerios = dados.ministerios || listaMinisteriosPadrao;
                     eventos = dados.eventos || [];
                     padroesFixosMinisterios = dados.padroesFixosMinisterios || [];
@@ -653,6 +698,7 @@
             renderEventos();
             renderPadroesMinisterios();
             renderUsuariosSistema();
+            renderAnciaoMes();
             atualizarSelects();
             verificarDadosData();
             renderResumoHoje();
@@ -678,13 +724,12 @@
 
         function entrarComoVisitante() {
             usuarioLogadoPerfil = 'VISITANTE';
-            transicionarParaApp("👤 Perfil: Visitante", "");
+            transicionarParaApp("👤 Perfil: Visitante");
         }
 
         function fazerLoginSeguro() {
             const perfilValor = document.getElementById('login-role-select').value;
             const senhaDigitada = document.getElementById('login-password').value;
-            let detalheTopo = "";
 
             if (perfilValor === 'ADMIN') {
                 if (senhaDigitada !== senhaAdmin) { alert('Senha incorreta!'); return; }
@@ -702,10 +747,10 @@
                 usuarioLogadoPerfil = nomeMin;
             }
 
-            transicionarParaApp(`👤 Perfil: ${usuarioLogadoPerfil}`, detalheTopo);
+            transicionarParaApp(`👤 Perfil: ${usuarioLogadoPerfil}`);
         }
 
-        function transicionarParaApp(textoBadge, detalheTopo) {
+        function transicionarParaApp(textoBadge) {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-screen').style.display = 'block';
             
@@ -733,6 +778,92 @@
             if(event) event.stopPropagation();
             const card = headerElement.parentElement;
             card.classList.toggle('active');
+        }
+
+        // --- MÓDULO ANCIÃO DO MÊS ---
+        async function salvarAnciaoMes(e) {
+            e.preventDefault();
+            const mes = document.getElementById('anciao-mes-select').value;
+            const nome = document.getElementById('anciao-nome-input').value.trim();
+            const editIndex = parseInt(document.getElementById('anciao-edit-index').value);
+
+            if (editIndex === -1) {
+                const indexExiste = anciaos.findIndex(a => a.mes === mes);
+                if (indexExiste !== -1) {
+                    anciaos[indexExiste].nome = nome;
+                } else {
+                    anciaos.push({ mes, nome });
+                }
+            } else {
+                anciaos[editIndex] = { mes, nome };
+            }
+
+            await salvarTudoNoBanco();
+            cancelarEdicaoAnciao();
+            renderAnciaoMes();
+            renderResumoHoje();
+            alert('Ancião do Mês salvo com sucesso!');
+        }
+
+        function renderAnciaoMes() {
+            const tbody = document.getElementById('table-anciao-mes');
+            if(!tbody) return;
+
+            if(anciaos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Nenhum ancião definido.</td></tr>`;
+                return;
+            }
+
+            const ordemMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            anciaos.sort((a, b) => ordemMeses.indexOf(a.mes) - ordemMeses.indexOf(b.mes));
+
+            tbody.innerHTML = anciaos.map((item, index) => `
+                <tr>
+                    <td><span class="tag tag-purple">${item.mes}</span></td>
+                    <td><strong>${item.nome}</strong></td>
+                    <td>
+                        <button type="button" class="action-btn-edit" onclick="prepararEdicaoAnciao(${index})">✏️</button>
+                        <button type="button" class="action-btn-delete" onclick="excluirAnciaoMes(${index})">X</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function prepararEdicaoAnciao(index) {
+            const item = anciaos[index];
+            document.getElementById('anciao-edit-index').value = index;
+            document.getElementById('anciao-mes-select').value = item.mes;
+            document.getElementById('anciao-nome-input').value = item.nome;
+            
+            document.getElementById('title-form-anciao').innerText = '✏️ EDITAR ANCIÃO DO MÊS';
+            document.getElementById('btn-salvar-anciao').innerText = 'Atualizar Ancião';
+            document.getElementById('btn-cancelar-anciao').style.display = 'inline-block';
+        }
+
+        function cancelarEdicaoAnciao() {
+            document.getElementById('form-anciao-mes').reset();
+            document.getElementById('anciao-edit-index').value = '-1';
+            document.getElementById('title-form-anciao').innerText = '➕ DEFINIR ANCIÃO RESPONSÁVEL';
+            document.getElementById('btn-salvar-anciao').innerText = 'Salvar Ancião do Mês';
+            document.getElementById('btn-cancelar-anciao').style.display = 'none';
+        }
+
+        async function excluirAnciaoMes(index) {
+            if(confirm(`Deseja remover a definição de ancião para ${anciaos[index].mes}?`)) {
+                anciaos.splice(index, 1);
+                await salvarTudoNoBanco();
+                renderAnciaoMes();
+                renderResumoHoje();
+            }
+        }
+
+        function obterAnciaoDoMesAtual() {
+            const dataAtual = new Date();
+            const mesesNomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const mesNomeAtual = mesesNomes[dataAtual.getMonth()];
+            
+            const anciaoEncontrado = anciaos.find(a => a.mes === mesNomeAtual);
+            return anciaoEncontrado ? anciaoEncontrado.nome : 'A definir';
         }
 
         function abrirFullscreenModal(modulo, event) {
@@ -770,7 +901,7 @@
                         }
                         htmlContent += `
                             <div class="preview-row-item" style="background-color: ${bg};">
-                                <div style="display:flex; justify-size:space-between; justify-content:space-between; align-items:center;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
                                     <div>${it.title || ''}</div>
                                     <div style="font-size:0.75rem;">${it.time || ''}</div>
                                 </div>
@@ -788,6 +919,37 @@
                 }
 
                 document.getElementById('modal-content-body').innerHTML = htmlContent;
+            } else if (modulo === 'anciaoMes') {
+                abasDiv.style.display = 'none';
+                document.getElementById('modal-titulo-view').innerText = "👔 Escala Geral de Anciãos do Mês";
+                
+                let tabelaHTML = `
+                    <div class="tabela-mes-card">
+                        <table class="tabela-mes-grid">
+                            <thead>
+                                <tr>
+                                    <th>MÊS</th>
+                                    <th>ANCIÃO RESPONSÁVEL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                if (anciaos.length === 0) {
+                    tabelaHTML += `<tr><td colspan="2" style="text-align:center; color:#94a3b8; padding: 20px;">Nenhum ancião cadastrado na escala.</td></tr>`;
+                } else {
+                    anciaos.forEach(item => {
+                        tabelaHTML += `
+                            <tr>
+                                <td><span class="data-tag-pill">${item.mes}</span></td>
+                                <td><strong style="color: #f8fafc; font-size: 1rem;">${item.nome}</strong></td>
+                            </tr>
+                        `;
+                    });
+                }
+                
+                tabelaHTML += `</tbody></table></div>`;
+                document.getElementById('modal-content-body').innerHTML = tabelaHTML;
             } else {
                 abasDiv.style.display = 'none';
                 const originalCardContent = document.querySelector(`#card-${modulo} .module-content`).innerHTML;
@@ -819,13 +981,14 @@
             if(abaResumoAtual === 'dia') {
                 tituloEl.innerText = "☀️ Escala de Hoje (Visão Geral)";
                 const esc = escalas[hoje] || {};
+                const anciaoAtual = obterAnciaoDoMesAtual();
                 
                 corpoEl.innerHTML = `
                     <div style="text-align: center; margin-bottom: 20px;">
                         <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 800;">ESCALA DE HOJE</h2>
                     </div>
                     <div class="resumo-lista">
-                        <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaos[0]?.nome || 'Marcilio'}</div></div>
+                        <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaoAtual}</div></div>
                         <div class="resumo-item"><div class="resumo-label">📖 Pregador / Orador</div><div class="resumo-value">${esc.pregador || 'A definir'}</div></div>
                         <div class="resumo-item"><div class="resumo-label">🎤 Música Especial</div><div class="resumo-value">${esc.especial || 'A definir'}</div></div>
                         <div class="resumo-item"><div class="resumo-label">🎶 Louvor Congregacional</div><div class="resumo-value">${esc.louvor || 'A definir'}</div></div>
@@ -915,7 +1078,7 @@
                     <textarea class="form-control field-perm input-obs" placeholder="Observação deste item (opcional)...">${obs}</textarea>
                 </div>
                 <div class="subitens-box">
-                    <div style="display: flex; justify-size: space-between; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                         <span style="font-size: 0.7rem; color: #38bdf8; font-weight: 700;">SUBITENS</span>
                         <button type="button" class="btn btn-primary field-perm" style="padding: 2px 6px; font-size: 0.65rem;" onclick="adicionarSubitem(this)">+ Subitem</button>
                     </div>
@@ -1156,10 +1319,11 @@
             const esc = escalas[hoje] || {};
             const ocorrenciaHoje = calcularOcorrenciaDaData(hoje);
             const padraoHoje = padroesFixosMinisterios.find(p => p.ocorrencia === ocorrenciaHoje);
+            const anciaoAtual = obterAnciaoDoMesAtual();
             
             const htmlConteudo = `
                 <div class="resumo-item"><div class="resumo-label">⛪ Ministério do Dia</div><div class="resumo-badge">${padraoHoje ? padraoHoje.ministerio : 'Livre'}</div></div>
-                <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaos[0]?.nome || 'Marcilio'}</div></div>
+                <div class="resumo-item"><div class="resumo-label">🏛️ Ancião do Mês</div><div class="resumo-value">${anciaoAtual}</div></div>
                 <div class="resumo-item"><div class="resumo-label">📖 Pregador</div><div class="resumo-value" style="color: #38bdf8; font-weight: 700;">${esc.pregador || 'A definir'}</div></div>
                 <div class="resumo-item"><div class="resumo-label">🎤 Música Especial</div><div class="resumo-value">${esc.especial || 'A definir'}</div></div>
                 <div class="resumo-item"><div class="resumo-label">🎶 Louvor</div><div class="resumo-value">${esc.louvor || 'A definir'}</div></div>
