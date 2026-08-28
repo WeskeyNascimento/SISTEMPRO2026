@@ -52,7 +52,7 @@
 
         textarea.form-control { resize: vertical; min-height: 60px; font-family: inherit; line-height: 1.4; }
 
-        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 120px; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; }
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; max-height: 130px; overflow-y: auto; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #334155; }
         .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #cbd5e1; cursor: pointer; }
         .checkbox-item input[type="checkbox"] { accent-color: #38bdf8; cursor: pointer; }
 
@@ -71,7 +71,7 @@
         .action-btn-delete { background-color: rgba(239, 68, 68, 0.25); color: #fca5a5; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; transition: 0.2s; }
 
         .tag { padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; display: inline-block; margin: 2px; }
-        .tag-purple { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; }
+        .tag-purple { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
         .tag-blue { background-color: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
 
         .ministerio-fixo-card { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 10px; padding: 10px 14px; margin-top: -4px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: #e2e8f0; }
@@ -275,10 +275,10 @@
                 </div>
             </div>
 
-            <!-- CARD 4: ANCIÃO DO MÊS (ATUALIZADO COM SELEÇÃO DE MINISTÉRIOS) -->
+            <!-- CARD 4: ANCIÃO RESPONSÁVEL (AGRUPADO POR NOME) -->
             <div class="module-card admin-only active" id="card-anciaoMes">
                 <div class="module-header" onclick="toggleCard(this, event)">
-                    <div class="module-title">👔 Ancião do Mês</div>
+                    <div class="module-title">👔 Anciãos Responsáveis</div>
                     <div style="display:flex; align-items:center; gap:10px;">
                         <button class="btn btn-primary" onclick="abrirFullscreenModal('anciaoMes', event)" style="padding: 4px 10px; font-size: 0.7rem;">🔍 Tela Cheia</button>
                         <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
@@ -286,32 +286,33 @@
                 </div>
                 <div class="module-content">
                     <div class="sub-card">
-                        <div class="sub-title" id="title-form-anciao">➕ Definir Ancião Responsável</div>
+                        <div class="sub-title" id="title-form-anciao">➕ Cadastrar / Editar Ancião</div>
                         <form id="form-anciao-mes" onsubmit="salvarAnciaoMes(event)">
                             <input type="hidden" id="anciao-edit-index" value="-1">
-                            <div class="form-group">
-                                <label>Mês / Período</label>
-                                <select id="anciao-mes-select" class="form-control" required>
-                                    <option value="Janeiro">Janeiro</option>
-                                    <option value="Fevereiro">Fevereiro</option>
-                                    <option value="Março">Março</option>
-                                    <option value="Abril">Abril</option>
-                                    <option value="Maio">Maio</option>
-                                    <option value="Junho">Junho</option>
-                                    <option value="Julho">Julho</option>
-                                    <option value="Agosto">Agosto</option>
-                                    <option value="Setembro">Setembro</option>
-                                    <option value="Outubro">Outubro</option>
-                                    <option value="Novembro">Novembro</option>
-                                    <option value="Dezembro">Dezembro</option>
-                                </select>
-                            </div>
+                            
                             <div class="form-group">
                                 <label>Nome do Ancião</label>
                                 <input type="text" id="anciao-nome-input" class="form-control" required placeholder="Ex: Marcilio ou Pr. João">
                             </div>
 
-                            <!-- NOVO CAMPO: SELEÇÃO DE MINISTÉRIOS DE APOIO -->
+                            <div class="form-group">
+                                <label>Meses de Atuação</label>
+                                <div class="checkbox-group" id="anciao-meses-checkboxes">
+                                    <label class="checkbox-item"><input type="checkbox" value="Janeiro" class="chk-anciao-mes"><span>Janeiro</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Fevereiro" class="chk-anciao-mes"><span>Fevereiro</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Março" class="chk-anciao-mes"><span>Março</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Abril" class="chk-anciao-mes"><span>Abril</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Maio" class="chk-anciao-mes"><span>Maio</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Junho" class="chk-anciao-mes"><span>Junho</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Julho" class="chk-anciao-mes"><span>Julho</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Agosto" class="chk-anciao-mes"><span>Agosto</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Setembro" class="chk-anciao-mes"><span>Setembro</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Outubro" class="chk-anciao-mes"><span>Outubro</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Novembro" class="chk-anciao-mes"><span>Novembro</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" value="Dezembro" class="chk-anciao-mes"><span>Dezembro</span></label>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label>Ministérios Apoiados por este Ancião</label>
                                 <div class="checkbox-group" id="anciao-ministerios-checkboxes">
@@ -320,15 +321,16 @@
                             </div>
 
                             <div style="display: flex; gap: 8px;">
-                                <button type="submit" id="btn-salvar-anciao" class="btn btn-success" style="flex: 2;">Salvar Ancião do Mês</button>
+                                <button type="submit" id="btn-salvar-anciao" class="btn btn-success" style="flex: 2;">Salvar Ancião</button>
                                 <button type="button" id="btn-cancelar-anciao" class="btn btn-danger" style="flex: 1; display: none;" onclick="cancelarEdicaoAnciao()">Cancelar</button>
                             </div>
                         </form>
                     </div>
+
                     <div class="sub-card" style="max-height:280px; overflow-y:auto;">
-                        <div class="sub-title">Escala de Anciãos Definida</div>
+                        <div class="sub-title">Anciões Cadastrados</div>
                         <table>
-                            <thead><tr><th>Mês</th><th>Ancião & Apoio</th><th>Ações</th></tr></thead>
+                            <thead><tr><th>Ancião</th><th>Meses & Ministérios</th><th>Ações</th></tr></thead>
                             <tbody id="table-anciao-mes"></tbody>
                         </table>
                     </div>
@@ -535,7 +537,7 @@
         const dbNovo = firebase.firestore(appNovo);
 
         let senhaAdmin = 'admin123';
-        let anciaos = []; // Estrutura: [{ mes: 'Janeiro', nome: 'Marcilio', ministeriosApoio: ['Música', 'Jovens'] }]
+        let anciaos = []; // Estrutura: [{ nome: 'Marcilio', meses: ['Janeiro', 'Fevereiro'], ministeriosApoio: ['Música', 'Jovens'] }]
         let ministerios = [];
         let eventos = [];
         let padroesFixosMinisterios = [];
@@ -612,7 +614,27 @@
                 if (docSnap.exists) {
                     const dados = docSnap.data();
                     senhaAdmin = dados.senhaAdmin || 'admin123';
-                    anciaos = dados.anciaos || [];
+                    
+                    // Compatibilidade para converter dados antigos de Anciãos
+                    if (dados.anciaos && dados.anciaos.length > 0) {
+                        if (dados.anciaos[0].mes && !dados.anciaos[0].meses) {
+                            const agrupados = {};
+                            dados.anciaos.forEach(a => {
+                                if (!agrupados[a.nome]) {
+                                    agrupados[a.nome] = { nome: a.nome, meses: [], ministeriosApoio: a.ministeriosApoio || [] };
+                                }
+                                if (a.mes && !agrupados[a.nome].meses.includes(a.mes)) {
+                                    agrupados[a.nome].meses.push(a.mes);
+                                }
+                            });
+                            anciaos = Object.values(agrupados);
+                        } else {
+                            anciaos = dados.anciaos;
+                        }
+                    } else {
+                        anciaos = [];
+                    }
+
                     ministerios = (dados.ministerios && dados.ministerios.length > 0) ? dados.ministerios : listaMinisteriosPadrao;
                     eventos = dados.eventos || [];
                     padroesFixosMinisterios = dados.padroesFixosMinisterios || [{ ocorrencia: '1º Sábado', ministerio: 'Adolescentes (19Teen)' }];
@@ -795,7 +817,7 @@
             card.classList.toggle('active');
         }
 
-        // --- MÓDULO ANCIÃO DO MÊS (ATUALIZADO PARA SUPORTAR MINISTÉRIOS DE APOIO) ---
+        // --- MÓDULO ANCIÃO DO MÊS (AGRUPADO POR NOME) ---
         function renderCheckboxesAnciaoMinisterios(selecionados = []) {
             const container = document.getElementById('anciao-ministerios-checkboxes');
             if(!container) return;
@@ -818,20 +840,30 @@
 
         async function salvarAnciaoMes(e) {
             e.preventDefault();
-            const mes = document.getElementById('anciao-mes-select').value;
             const nome = document.getElementById('anciao-nome-input').value.trim();
             const editIndex = parseInt(document.getElementById('anciao-edit-index').value);
 
-            // Coleta os ministérios selecionados
+            // Coleta meses selecionados
+            const meses = [];
+            document.querySelectorAll('.chk-anciao-mes:checked').forEach(chk => {
+                meses.push(chk.value);
+            });
+
+            // Coleta ministérios selecionados
             const ministeriosApoio = [];
             document.querySelectorAll('.chk-anciao-min:checked').forEach(chk => {
                 ministeriosApoio.push(chk.value);
             });
 
-            const objAnciao = { mes, nome, ministeriosApoio };
+            if (meses.length === 0) {
+                alert('Selecione pelo menos um mês de atuação para o Ancião.');
+                return;
+            }
+
+            const objAnciao = { nome, meses, ministeriosApoio };
 
             if (editIndex === -1) {
-                const indexExiste = anciaos.findIndex(a => a.mes === mes);
+                const indexExiste = anciaos.findIndex(a => a.nome.toLowerCase() === nome.toLowerCase());
                 if (indexExiste !== -1) {
                     anciaos[indexExiste] = objAnciao;
                 } else {
@@ -845,7 +877,7 @@
             cancelarEdicaoAnciao();
             renderAnciaoMes();
             renderResumoHoje();
-            alert('Ancião do Mês salvo com sucesso!');
+            alert('Ancião salvo com sucesso!');
         }
 
         function renderAnciaoMes() {
@@ -858,19 +890,24 @@
             }
 
             const ordemMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            anciaos.sort((a, b) => ordemMeses.indexOf(a.mes) - ordemMeses.indexOf(b.mes));
 
             tbody.innerHTML = anciaos.map((item, index) => {
+                const mesesOrdenados = (item.meses || []).sort((a, b) => ordemMeses.indexOf(a) - ordemMeses.indexOf(b));
+                
+                const tagsMeses = mesesOrdenados.length > 0 
+                    ? mesesOrdenados.map(m => `<span class="tag tag-purple">${m}</span>`).join('') 
+                    : '<span style="font-size:0.75rem; color:#64748b;">Nenhum mês</span>';
+
                 const tagsMin = (item.ministeriosApoio && item.ministeriosApoio.length > 0)
                     ? item.ministeriosApoio.map(m => `<span class="tag tag-blue">${m}</span>`).join('')
-                    : '<span style="font-size:0.75rem; color:#64748b;">Nenhum ministério associado</span>';
+                    : '<span style="font-size:0.75rem; color:#64748b;">Nenhum ministério</span>';
 
                 return `
                     <tr>
-                        <td style="vertical-align: top;"><span class="tag tag-purple">${item.mes}</span></td>
+                        <td style="vertical-align: top;"><strong style="color: #f8fafc; font-size: 0.95rem;">${item.nome}</strong></td>
                         <td>
-                            <strong style="color: #f8fafc; font-size: 0.9rem;">${item.nome}</strong>
-                            <div style="margin-top: 4px;">${tagsMin}</div>
+                            <div style="margin-bottom: 4px;"><strong>Meses:</strong> ${tagsMeses}</div>
+                            <div><strong>Apoio:</strong> ${tagsMin}</div>
                         </td>
                         <td style="vertical-align: top;">
                             <button type="button" class="action-btn-edit" onclick="prepararEdicaoAnciao(${index})">✏️</button>
@@ -884,12 +921,16 @@
         function prepararEdicaoAnciao(index) {
             const item = anciaos[index];
             document.getElementById('anciao-edit-index').value = index;
-            document.getElementById('anciao-mes-select').value = item.mes;
             document.getElementById('anciao-nome-input').value = item.nome;
             
+            // Marca checkboxes de meses
+            document.querySelectorAll('.chk-anciao-mes').forEach(chk => {
+                chk.checked = (item.meses && item.meses.includes(chk.value));
+            });
+
             renderCheckboxesAnciaoMinisterios(item.ministeriosApoio || []);
 
-            document.getElementById('title-form-anciao').innerText = '✏️ EDITAR ANCIÃO DO MÊS';
+            document.getElementById('title-form-anciao').innerText = '✏️ EDITAR ANCIÃO';
             document.getElementById('btn-salvar-anciao').innerText = 'Atualizar Ancião';
             document.getElementById('btn-cancelar-anciao').style.display = 'inline-block';
         }
@@ -897,14 +938,17 @@
         function cancelarEdicaoAnciao() {
             document.getElementById('form-anciao-mes').reset();
             document.getElementById('anciao-edit-index').value = '-1';
+            
+            document.querySelectorAll('.chk-anciao-mes').forEach(chk => chk.checked = false);
             renderCheckboxesAnciaoMinisterios([]);
-            document.getElementById('title-form-anciao').innerText = '➕ DEFINIR ANCIÃO RESPONSÁVEL';
-            document.getElementById('btn-salvar-anciao').innerText = 'Salvar Ancião do Mês';
+
+            document.getElementById('title-form-anciao').innerText = '➕ CADASTRAR / EDITAR ANCIÃO';
+            document.getElementById('btn-salvar-anciao').innerText = 'Salvar Ancião';
             document.getElementById('btn-cancelar-anciao').style.display = 'none';
         }
 
         async function excluirAnciaoMes(index) {
-            if(confirm(`Deseja remover a definição de ancião para ${anciaos[index].mes}?`)) {
+            if(confirm(`Deseja remover o cadastro do Ancião ${anciaos[index].nome}?`)) {
                 anciaos.splice(index, 1);
                 await salvarTudoNoBanco();
                 renderAnciaoMes();
@@ -917,7 +961,7 @@
             const mesesNomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             const mesNomeAtual = mesesNomes[dataAtual.getMonth()];
             
-            return anciaos.find(a => a.mes === mesNomeAtual) || null;
+            return anciaos.find(a => a.meses && a.meses.includes(mesNomeAtual)) || null;
         }
 
         function abrirFullscreenModal(modulo, event) {
@@ -975,16 +1019,16 @@
                 document.getElementById('modal-content-body').innerHTML = htmlContent;
             } else if (modulo === 'anciaoMes') {
                 abasDiv.style.display = 'none';
-                document.getElementById('modal-titulo-view').innerText = "👔 Escala Geral de Anciãos do Mês";
+                document.getElementById('modal-titulo-view').innerText = "👔 Escala Geral de Anciãos";
                 
                 let tabelaHTML = `
                     <div class="tabela-mes-card">
                         <table class="tabela-mes-grid">
                             <thead>
                                 <tr>
-                                    <th style="width: 20%;">MÊS</th>
-                                    <th style="width: 30%;">ANCIÃO RESPONSÁVEL</th>
-                                    <th style="width: 50%;">MINISTÉRIOS APOIADOS</th>
+                                    <th style="width: 25%;">ANCIÃO RESPONSÁVEL</th>
+                                    <th style="width: 35%;">MESES DE ATUAÇÃO</th>
+                                    <th style="width: 40%;">MINISTÉRIOS APOIADOS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -993,15 +1037,23 @@
                 if (anciaos.length === 0) {
                     tabelaHTML += `<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding: 20px;">Nenhum ancião cadastrado na escala.</td></tr>`;
                 } else {
+                    const ordemMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
                     anciaos.forEach(item => {
+                        const mesesOrdenados = (item.meses || []).sort((a, b) => ordemMeses.indexOf(a) - ordemMeses.indexOf(b));
+                        
+                        const tagsMeses = mesesOrdenados.length > 0 
+                            ? mesesOrdenados.map(m => `<span class="tag tag-purple">${m}</span>`).join('') 
+                            : '<span style="font-size:0.75rem; color:#64748b;">Nenhum mês</span>';
+
                         const tagsMin = (item.ministeriosApoio && item.ministeriosApoio.length > 0)
                             ? item.ministeriosApoio.map(m => `<span class="tag tag-blue">${m}</span>`).join('')
                             : '<span style="font-size:0.75rem; color:#64748b;">Nenhum ministério</span>';
 
                         tabelaHTML += `
                             <tr>
-                                <td><span class="data-tag-pill">${item.mes}</span></td>
                                 <td><strong style="color: #f8fafc; font-size: 1rem;">${item.nome}</strong></td>
+                                <td>${tagsMeses}</td>
                                 <td>${tagsMin}</td>
                             </tr>
                         `;
